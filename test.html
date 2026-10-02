@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест: Тетраэдр и параллелепипед (Геометрия, 10 класс)</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div id="app" class="w-full max-w-2xl bg-slate-800 rounded-xl shadow-2xl p-6 md:p-8 border border-slate-700">
+        
+        <!-- Welcome Screen -->
+        <div id="screen-welcome" class="text-center space-y-6">
+            <h1 class="text-2xl md:text-3xl font-bold text-sky-400">Геометрия 10 класс: Тетраэдр и параллелепипед</h1>
+            <p class="text-slate-300 text-sm md:text-base">
+                Вам предстоит выполнить тест из 10 заданий. На прохождение выделено ровно <strong>10 минут</strong>.
+                Копирование заданий заблокировано. Прохождение доступно только один раз с данного устройства.
+            </p>
+            <div id="already-completed-msg" class="hidden bg-rose-900/50 border border-rose-700 text-rose-200 p-4 rounded-lg text-sm">
+                ⚠️ С этого устройства тест уже был пройден! Повторное прохождение невозможно.
+            </div>
+            <div id="start-form" class="space-y-4 pt-4">
+                <div>
+                    <label for="student-name" class="block text-sm font-medium text-slate-300 mb-1 text-left">Введите вашу фамилию и имя:</label>
+                    <input type="text" id="student-name" placeholder="Например: Иванов Алексей" class="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:border-sky-500">
+                </div>
+                <button id="btn-start" onclick="startTest()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-semibold py-3 rounded-lg transition duration-200 shadow-lg cursor-pointer">
+                    Начать тест
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="screen-quiz" class="hidden space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-4">
+                <span id="question-counter" class="text-sm font-medium text-slate-400">Вопрос 1 из 10</span>
+                <div id="timer-container" class="bg-slate-900 px-3 py-1 rounded-full border border-slate-700 text-sky-400 font-mono text-sm">
+                    ⏱️ <span id="timer-display">10:00</span>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h2 id="question-text" class="text-lg md:text-xl font-semibold text-slate-100 leading-relaxed"></h2>
+                <div id="options-container" class="space-y-3"></div>
+            </div>
+
+            <div class="flex justify-between pt-4 border-t border-slate-700">
+                <button id="btn-prev" onclick="prevQuestion()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition text-sm font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                    Назад
+                </button>
+                <button id="btn-next" onclick="nextQuestion()" class="px-5 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg transition text-sm font-semibold cursor-pointer">
+                    Далее
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="screen-results" class="hidden text-center space-y-6">
+            <h2 class="text-2xl font-bold text-sky-400">Тест завершен!</h2>
+            <div class="bg-slate-900 p-6 rounded-xl border border-slate-700 space-y-3">
+                <p id="result-student" class="text-lg font-medium text-slate-200"></p>
+                <p class="text-3xl font-extrabold text-sky-500" id="result-score">0 / 10</p>
+                <p id="result-message" class="text-slate-400 text-sm"></p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('geometry_test_completed') === 'true') {
+                document.getElementById('start-form').style.display = 'none';
+                document.getElementById('already-completed-msg').classList.remove('hidden');
+            }
+        });
+
+        document.addEventListener('copy', (e) => { e.preventDefault(); alert('Копирование заданий запрещено!'); });
+        document.addEventListener('cut', (e) => { e.preventDefault(); });
+        document.addEventListener('contextmenu', (e) => { e.preventDefault(); });
+
+        const questions = [
+            {
+                question: "Сколько граней имеет тетраэдр?",
+                options: ["3 грани", "4 грани", "6 граней", "8 граней"],
+                correct: 1
+            },
+            {
+                question: "Сколько вершин у параллелепипеда?",
+                options: ["6 вершин", "8 вершин", "12 вершин", "10 вершин"],
+                correct: 1
+            },
+            {
+                question: "Какой многоугольник лежит в основе граней правильного тетраэдра?",
+                options: ["Равносторонний треугольник", "Квадрат", "Правильный шестиугольник", "Прямоугольник"],
+                correct: 0
+            },
+            {
+                question: "Сколько ребер сходится в одной вершине тетраэдра?",
+                options: ["2 ребра", "3 ребра", "4 ребра", "6 ребер"],
+                correct: 1
+            },
+            {
+                question: "Противоположные грани параллелепипеда:",
+                options: ["Перпендикулярны друг другу", "Параллельны и равны", "Пересекаются под прямым углом", "Имеют разную площадь"],
+                correct: 1
+            },
+            {
+                question: "Сколько диагоналей у параллелепипеда?",
+                options: ["4 диагонали", "6 диагоналей", "8 диагоналей", "12 диагоналей"],
+                correct: 0
+            },
+            {
+                question: "Сколько внутренних диагоналей имеет тетраэдр?",
+                options: ["0 диагоналей", "2 диагонали", "3 диагонали", "4 диагонали"],
+                correct: 0
+            },
+            {
+                question: "Сколько ребер у параллелепипеда?",
+                options: ["8 ребер", "10 ребер", "12 ребер", "16 ребер"],
+                correct: 2
+            },
+            {
+                question: "Если все боковые ребра параллелепипеда перпендикулярны плоскости основания, то параллелепипед называется:",
+                options: ["Наклонным", "Прямым", "Прямоугольным", "Кубом"],
+                correct: 1
+            },
+            {
+                question: "Могут ли все грани прямоугольного параллелепипеда быть квадратами?",
+                options: ["Нет, никогда", "Да, это куб", "Только две грани", "Только четыре грани"],
+                correct: 1
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let studentName = "";
+        let timeLeft = 600;
+        let timerInterval = null;
+
+        function startTest() {
+            const nameInput = document.getElementById('student-name').value.trim();
+            if (!nameInput) {
+                alert('Пожалуйста, введите вашу фамилию и имя.');
+                return;
+            }
+            studentName = nameInput;
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            
+            startTimer();
+            renderQuestion();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                document.getElementById('timer-display').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    finishTest();
+                }
+            }, 1000);
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestionIndex];
+            document.getElementById('question-counter').textContent = `Вопрос ${currentQuestionIndex + 1} из ${questions.length}`;
+            document.getElementById('question-text').textContent = q.question;
+
+            const optsContainer = document.getElementById('options-container');
+            optsContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const isSelected = userAnswers[currentQuestionIndex] === idx;
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left px-4 py-3 rounded-lg border transition text-sm md:text-base cursor-pointer ${
+                    isSelected 
+                        ? 'bg-sky-900/60 border-sky-500 text-slate-100 shadow-md' 
+                        : 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-700/50'
+                }`;
+                btn.textContent = opt;
+                btn.onclick = () => selectOption(idx);
+                optsContainer.appendChild(btn);
+            });
+
+            document.getElementById('btn-prev').disabled = currentQuestionIndex === 0;
+            const nextBtn = document.getElementById('btn-next');
+            if (currentQuestionIndex === questions.length - 1) {
+                nextBtn.textContent = "Завершить тест";
+                nextBtn.className = "px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition text-sm font-semibold cursor-pointer";
+            } else {
+                nextBtn.textContent = "Далее";
+                nextBtn.className = "px-5 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg transition text-sm font-semibold cursor-pointer";
+            }
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIndex] = optionIndex;
+            renderQuestion();
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                finishTest();
+            }
+        }
+
+        function finishTest() {
+            clearInterval(timerInterval);
+            localStorage.setItem('geometry_test_completed', 'true');
+
+            let score = 0;
+            questions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.correct) {
+                    score++;
+                }
+            });
+
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-results').classList.remove('hidden');
+
+            document.getElementById('result-student').textContent = `Ученик: ${studentName}`;
+            document.getElementById('result-score').textContent = `${score} / ${questions.length}`;
+            
+            let message = "";
+            if (score === 10) message = "Отлично! Превосходное знание темы!";
+            else if (score >= 7) message = "Хороший результат! Вы хорошо усвоили материал.";
+            else if (score >= 4) message = "Удовлетворительно. Стоит повторить свойства тел.";
+            else message = "Рекомендуем внимательнее изучить параграф учебника.";
+            
+            document.getElementById('result-message').textContent = message;
+        }
+    </script>
+</body>
+</html>
