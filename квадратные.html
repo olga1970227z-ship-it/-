@@ -1,0 +1,1206 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Майнкрафт-квест по неполным квадратным уравнениям · 8 класс</title><style>
+
+/* =========================================================
+   ОСНОВНЫЕ СТИЛИ
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:
+        linear-gradient(
+            rgba(15,25,20,.88),
+            rgba(15,25,20,.88)
+        ),
+        #263238;
+
+    color: #263238;
+}
+
+.game {
+    width: 100%;
+    max-width: 1150px;
+    min-height: 100vh;
+
+    margin: auto;
+
+    background: #f5f7f8;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   ШАПКА
+========================================================= */
+
+.header {
+
+    position: relative;
+
+    min-height: 125px;
+
+    padding: 25px 20px;
+
+    text-align: center;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            #4caf50 0 43%,
+            #795548 43% 100%
+        );
+
+    border-bottom:
+        8px solid #3e2723;
+
+    box-shadow:
+        inset 0 -7px rgba(0,0,0,.25);
+}
+
+.header h1 {
+
+    margin: 0;
+
+    font-size:
+        clamp(25px, 5vw, 42px);
+
+    font-weight: 900;
+
+    text-shadow:
+        4px 4px #1b5e20,
+        7px 7px rgba(0,0,0,.3);
+}
+
+.header h2 {
+
+    margin:
+        8px 0 0;
+
+    font-size:
+        clamp(14px, 3vw, 20px);
+
+    text-shadow:
+        2px 2px #4e342e;
+}
+
+
+/* =========================================================
+   ДЕКОРАТИВНЫЕ КУБЫ
+========================================================= */
+
+.cube {
+
+    position: absolute;
+
+    width: 60px;
+    height: 60px;
+
+    border: 4px solid #1b5e20;
+
+    box-shadow:
+        7px 7px 0 rgba(0,0,0,.3),
+        inset 6px 6px rgba(255,255,255,.2),
+        inset -6px -6px rgba(0,0,0,.2);
+
+    transform: rotate(8deg);
+}
+
+.cube.left {
+
+    left: 20px;
+    top: 25px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #81c784,
+            #388e3c
+        );
+}
+
+.cube.right {
+
+    right: 20px;
+    bottom: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #90caf9,
+            #1976d2
+        );
+}
+
+
+/* =========================================================
+   ИНФОРМАЦИЯ
+========================================================= */
+
+.info {
+
+    display: flex;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    padding: 12px;
+
+    background: #eceff1;
+
+    border-bottom:
+        2px solid #cfd8dc;
+}
+
+.info-box {
+
+    padding:
+        7px 14px;
+
+    background: white;
+
+    border:
+        2px solid #78909c;
+
+    border-radius: 8px;
+
+    font-weight: bold;
+
+    box-shadow:
+        2px 2px 0 rgba(0,0,0,.08);
+}
+
+
+/* =========================================================
+   ПРОГРЕСС
+========================================================= */
+
+.progress-area {
+
+    padding:
+        12px 25px 5px;
+}
+
+.progress-text {
+
+    text-align: center;
+
+    font-weight: bold;
+
+    margin-bottom: 7px;
+}
+
+.progress {
+
+    width: 100%;
+
+    height: 18px;
+
+    background: #cfd8dc;
+
+    border:
+        2px solid #455a64;
+
+    overflow: hidden;
+}
+
+.progress-bar {
+
+    height: 100%;
+
+    width: 0%;
+
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #66bb6a 0,
+            #66bb6a 12px,
+            #43a047 12px,
+            #43a047 24px
+        );
+
+    transition:
+        width .3s;
+}
+
+
+/* =========================================================
+   СЛАЙДЫ
+========================================================= */
+
+.slides {
+
+    position: relative;
+
+    min-height: 600px;
+}
+
+.slide {
+
+    display: none;
+
+    position: relative;
+
+    min-height: 570px;
+
+    margin: 20px;
+
+    padding:
+        30px 35px 100px;
+
+    background: white;
+
+    border:
+        4px solid #cfd8dc;
+
+    border-left:
+        10px solid #43a047;
+
+    border-radius: 16px;
+
+    box-shadow:
+        8px 8px 0 rgba(0,0,0,.15);
+
+    animation:
+        appear .3s ease;
+}
+
+.slide.active {
+
+    display: block;
+}
+
+@keyframes appear {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateX(20px);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateX(0);
+    }
+}
+
+
+/* =========================================================
+   НОМЕР ВОПРОСА
+========================================================= */
+
+.question-number {
+
+    display: inline-block;
+
+    padding:
+        8px 15px;
+
+    color: white;
+
+    background: #388e3c;
+
+    border-radius: 7px;
+
+    font-size: 18px;
+
+    font-weight: 900;
+
+    box-shadow:
+        3px 3px 0 #1b5e20;
+}
+
+
+/* =========================================================
+   ТЕКСТ ВОПРОСА
+========================================================= */
+
+.question-title {
+
+    margin-top: 28px;
+
+    max-width: 850px;
+
+    font-size:
+        clamp(22px, 4vw, 32px);
+
+    line-height: 1.4;
+
+    font-weight: 900;
+
+    color: #263238;
+}
+
+
+/* =========================================================
+   ВАРИАНТЫ ОТВЕТОВ
+========================================================= */
+
+.answers {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0,1fr));
+
+    gap: 15px;
+
+    margin-top: 30px;
+}
+
+.answer {
+
+    display: block;
+
+    padding: 18px;
+
+    background: #f5f7f8;
+
+    border:
+        3px solid #b0bec5;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    font-size: 19px;
+
+    font-weight: 700;
+
+    transition: .2s;
+
+    box-shadow:
+        3px 3px 0 rgba(0,0,0,.08);
+}
+
+.answer:hover {
+
+    background: #e8f5e9;
+
+    border-color: #43a047;
+
+    transform:
+        translateY(-3px);
+}
+
+.answer input {
+
+    transform:
+        scale(1.35);
+
+    margin-right: 12px;
+}
+
+.answer.selected {
+
+    background: #dcedc8;
+
+    border-color: #43a047;
+
+    box-shadow:
+        inset 0 0 0 2px #66bb6a,
+        3px 3px 0 rgba(0,0,0,.12);
+}
+
+
+/* =========================================================
+   НАВИГАЦИЯ
+========================================================= */
+
+.navigation {
+
+    position: absolute;
+
+    left: 25px;
+    right: 25px;
+    bottom: 20px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+.nav-button {
+
+    padding:
+        13px 25px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: 900;
+
+    cursor: pointer;
+
+    transition: .15s;
+}
+
+.nav-button:hover {
+
+    transform:
+        translateY(-2px);
+}
+
+.nav-button:active {
+
+    transform:
+        translateY(4px);
+}
+
+.prev {
+
+    background: #607d8b;
+
+    box-shadow:
+        0 5px 0 #37474f;
+}
+
+.next {
+
+    background: #388e3c;
+
+    box-shadow:
+        0 5px 0 #1b5e20;
+}
+
+.finish {
+
+    background: #ef6c00;
+
+    box-shadow:
+        0 5px 0 #bf360c;
+}
+
+
+/* =========================================================
+   ДЕКОР НА ВОПРОСАХ
+========================================================= */
+
+.character {
+
+    position: absolute;
+
+    font-size: 70px;
+
+    right: 25px;
+    top: 20px;
+
+    filter:
+        drop-shadow(
+            5px 6px 0 rgba(0,0,0,.25)
+        );
+}
+
+.question-icon {
+
+    position: absolute;
+
+    right: 30px;
+    bottom: 95px;
+
+    font-size: 55px;
+
+    opacity: .9;
+}
+
+
+/* =========================================================
+   ПРИВЕТСТВЕННЫЙ СЛАЙД
+========================================================= */
+
+.welcome-slide {
+
+    text-align: center;
+
+    padding:
+        30px 25px 35px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            rgba(255,255,255,.96),
+            rgba(232,245,233,.98)
+        );
+}
+
+.welcome-title {
+
+    margin-top: 10px;
+
+    font-size:
+        clamp(30px, 6vw, 52px);
+
+    font-weight: 1000;
+
+    color: #2e7d32;
+
+    text-shadow:
+        4px 4px 0 #a5d6a7,
+        7px 7px 0 rgba(0,0,0,.15);
+}
+
+.welcome-subtitle {
+
+    display: inline-block;
+
+    margin-top: 8px;
+
+    padding:
+        8px 18px;
+
+    background: #795548;
+
+    color: white;
+
+    font-size: 20px;
+
+    font-weight: 900;
+
+    border-radius: 7px;
+
+    box-shadow:
+        4px 4px 0 #4e342e;
+}
+
+.welcome-character {
+
+    font-size: 105px;
+
+    margin-top: 5px;
+
+    filter:
+        drop-shadow(
+            7px 8px 0 rgba(0,0,0,.25)
+        );
+
+    animation:
+        characterBounce 2s infinite;
+}
+
+@keyframes characterBounce {
+
+    0%,100% {
+        transform:
+            translateY(0);
+    }
+
+    50% {
+        transform:
+            translateY(-12px);
+    }
+}
+
+.welcome-pickaxe {
+
+    position: absolute;
+
+    top: 45px;
+    right: 45px;
+
+    font-size: 70px;
+
+    transform:
+        rotate(-20deg);
+
+    filter:
+        drop-shadow(
+            5px 5px 0 rgba(0,0,0,.25)
+        );
+}
+
+.welcome-text {
+
+    margin:
+        15px auto;
+
+    max-width: 700px;
+
+    font-size: 23px;
+
+    line-height: 1.45;
+
+    font-weight: 700;
+
+    color: #263238;
+}
+
+.welcome-mission {
+
+    max-width: 650px;
+
+    margin:
+        20px auto;
+
+    padding:
+        17px 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff8e1,
+            #ffecb3
+        );
+
+    border:
+        4px solid #f9a825;
+
+    border-radius: 14px;
+
+    font-size: 19px;
+
+    font-weight: 900;
+
+    line-height: 1.5;
+
+    box-shadow:
+        5px 5px 0 rgba(0,0,0,.15);
+}
+
+.welcome-mission div {
+
+    margin-top: 8px;
+
+    font-weight: 600;
+}
+
+.welcome-rules {
+
+    display: flex;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin:
+        18px auto;
+
+    max-width: 800px;
+}
+
+.welcome-rules div {
+
+    padding:
+        10px 14px;
+
+    background: white;
+
+    border:
+        3px solid #90a4ae;
+
+    border-radius: 9px;
+
+    font-weight: 800;
+
+    box-shadow:
+        3px 3px 0 rgba(0,0,0,.1);
+}
+
+.start-button {
+
+    margin-top: 10px;
+
+    padding:
+        18px 42px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            #66bb6a,
+            #2e7d32
+        );
+
+    color: white;
+
+    font-size: 24px;
+
+    font-weight: 1000;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 7px 0 #1b5e20,
+        0 10px 15px rgba(0,0,0,.2);
+
+    transition: .15s;
+}
+
+.start-button:hover {
+
+    transform:
+        translateY(-3px)
+        scale(1.03);
+
+    box-shadow:
+        0 10px 0 #1b5e20,
+        0 15px 20px rgba(0,0,0,.25);
+}
+
+.start-button:active {
+
+    transform:
+        translateY(5px);
+
+    box-shadow:
+        0 2px 0 #1b5e20;
+}
+
+.welcome-cube {
+
+    position: absolute;
+
+    font-size: 55px;
+
+    filter:
+        drop-shadow(
+            5px 5px 0 rgba(0,0,0,.2)
+        );
+}
+
+.cube-one {
+
+    left: 25px;
+    bottom: 35px;
+}
+
+.cube-two {
+
+    left: 70px;
+    top: 40px;
+}
+
+.cube-three {
+
+    right: 30px;
+    bottom: 45px;
+}
+
+
+/* =========================================================
+   РЕЗУЛЬТАТ
+========================================================= */
+
+.result {
+
+    display: none;
+
+    margin: 20px;
+
+    min-height: 570px;
+
+    padding:
+        45px 25px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f1f8e9,
+            #e8f5e9
+        );
+
+    border:
+        5px solid #43a047;
+
+    border-radius: 18px;
+
+    box-shadow:
+        9px 9px 0 rgba(0,0,0,.18);
+}
+
+.result.show {
+
+    display: block;
+
+    animation:
+        appear .4s ease;
+}
+
+.result h2 {
+
+    font-size: 35px;
+
+    color: #2e7d32;
+}
+
+.big-character {
+
+    font-size: 90px;
+}
+
+.score {
+
+    font-size: 25px;
+
+    font-weight: 900;
+}
+
+.percent {
+
+    margin: 15px;
+
+    font-size: 55px;
+
+    font-weight: 900;
+
+    color: #1565c0;
+}
+
+.grade {
+
+    display: inline-block;
+
+    padding:
+        15px 35px;
+
+    color: white;
+
+    background: #43a047;
+
+    border-radius: 12px;
+
+    font-size: 42px;
+
+    font-weight: 900;
+
+    box-shadow:
+        6px 6px 0 #1b5e20;
+}
+
+.message {
+
+    max-width: 700px;
+
+    margin:
+        25px auto;
+
+    font-size: 20px;
+
+    line-height: 1.5;
+
+    font-weight: 700;
+}
+
+.restart {
+
+    padding:
+        14px 28px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #795548;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: 900;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 0 #4e342e;
+}
+
+
+/* =========================================================
+   МОБИЛЬНАЯ ВЕРСИЯ
+========================================================= */
+
+@media(max-width:700px) {
+
+    .header {
+
+        min-height: 110px;
+    }
+
+    .cube {
+
+        width: 40px;
+        height: 40px;
+    }
+
+    .slide {
+
+        margin: 10px;
+
+        padding:
+            25px 18px 95px;
+    }
+
+    .answers {
+
+        grid-template-columns: 1fr;
+
+        gap: 10px;
+    }
+
+    .answer {
+
+        font-size: 16px;
+
+        padding: 14px;
+    }
+
+    .character {
+
+        font-size: 45px;
+
+        right: 12px;
+        top: 12px;
+    }
+
+    .navigation {
+
+        left: 15px;
+        right: 15px;
+    }
+
+    .nav-button {
+
+        padding:
+            11px 16px;
+
+        font-size: 14px;
+    }
+
+    .welcome-slide {
+
+        padding:
+            25px 15px 30px;
+    }
+
+    .welcome-character {
+
+        font-size: 75px;
+    }
+
+    .welcome-pickaxe {
+
+        font-size: 45px;
+
+        right: 15px;
+        top: 30px;
+    }
+
+    .welcome-text {
+
+        font-size: 18px;
+    }
+
+    .welcome-mission {
+
+        font-size: 16px;
+    }
+
+    .welcome-rules div {
+
+        width: 100%;
+
+        font-size: 14px;
+    }
+
+    .start-button {
+
+        font-size: 20px;
+
+        padding:
+            16px 30px;
+    }
+
+}
+
+
+/* =========================================================
+   ПРАЗДНИЧНАЯ АНИМАЦИЯ
+========================================================= */
+
+.confetti {
+
+    position: fixed;
+
+    width: 10px;
+    height: 10px;
+
+    top: -20px;
+
+    animation:
+        fall linear forwards;
+
+    z-index: 9999;
+}
+
+@keyframes fall {
+
+    to {
+
+        transform:
+            translateY(110vh)
+            rotate(720deg);
+
+        opacity: 0;
+    }
+}
+
+button,input{font:inherit}button:focus-visible,input:focus-visible{outline:3px solid #1565c0;outline-offset:3px}button:disabled{opacity:.4;cursor:default} [hidden]{display:none!important}.name-label{display:block;font-weight:bold;margin:15px}#name{max-width:100%;width:420px;padding:14px;border:3px solid #90a4ae;border-radius:8px;font-size:18px}#nameError{color:#b71c1c}.small{font-size:14px;line-height:1.6;color:#546e7a}#map{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:16px}#map button{width:38px;height:38px;border:2px solid #78909c;background:white;border-radius:4px;cursor:pointer}#map button.done{background:#c8e6c9}#map button.current{outline:3px solid #1565c0}.topic{color:#2e7d32;font-weight:bold;margin-top:24px}.question-title{margin-top:14px}.answer{text-align:left;color:#263238;min-height:66px}.end-area{text-align:center;padding:15px 15px 35px}#review{text-align:left;margin-top:28px}.review-item{background:white;border:2px solid #b0bec5;border-left:7px solid #43a047;padding:18px;margin:12px 0;line-height:1.7;border-radius:8px}.review-item.wrong{border-left-color:#ef6c00}.review-item h3{margin:0 0 10px}footer{text-align:center;padding:22px;color:#546e7a}.result button{margin:6px}.header h1{font-size:clamp(23px,4.6vw,40px)}@media(max-width:700px){.slide{min-height:560px}.navigation{gap:10px}.question-title{font-size:25px}.result{margin:10px;padding:25px 15px}.percent{font-size:42px}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}.frac{display:inline-flex;vertical-align:middle;flex-direction:column;text-align:center;line-height:1.15;margin:0 .16em;font-variant-numeric:tabular-nums}.frac>span:first-child{border-bottom:1.7px solid currentColor;padding:0 .17em .08em}.frac>span:last-child{padding:.08em .17em 0}.answers .answer{line-height:1.8}.question-title{line-height:1.9}.review-item{line-height:2}button{touch-action:manipulation}@media(max-width:700px){.header h1{font-size:24px}.question-title{font-size:24px}.welcome-title{font-size:32px}} 
+#play{position:relative;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+#seal{position:fixed;inset:0;z-index:9990;pointer-events:none;display:grid;place-items:center;overflow:hidden}
+#seal span{transform:rotate(-24deg);opacity:.16;color:#132632;font-size:clamp(24px,6vw,70px);font-weight:900;text-align:center;overflow-wrap:anywhere;max-width:90vw}
+#notice{color:#843207;background:#fff4d5;padding:10px;margin:10px auto;max-width:700px;font-weight:bold}
+body.covered #play{visibility:hidden}
+@media print{.game{display:none!important}}
+</style></head><body><div class="game"><header class="header"><h1>⛏ КВЕСТ НЕПОЛНЫХ КВАДРАТНЫХ УРАВНЕНИЙ</h1><h2>8 КЛАСС • MINECRAFT EDITION</h2></header>
+<div class="info"><div class="info-box">💎 20 заданий · 20 баллов</div><div class="info-box" id="clock">⏱ 35:00</div><div class="info-box" id="player">🧑‍🎮 Исследователь</div></div>
+<main><section id="welcome" class="slide active welcome-slide"><div class="welcome-character">⛏️ 💎 🧱</div><h2 class="welcome-title">Шахта неполных квадратных уравнений</h2><div class="welcome-subtitle">Добудь 20 алмазов знаний!</div><p class="welcome-text">Определяй коэффициенты, переноси слагаемые и выноси общий множитель. За каждый верный ответ получи один алмаз.</p><div class="welcome-mission">Твоя миссия<div>Собери ресурсы, реши неполные квадратные уравнения и открой портал знаний!</div></div><label class="name-label" for="name">Фамилия и имя</label><input id="name" autocomplete="name" maxlength="80" placeholder="Введи фамилию и имя" required><p id="nameError" role="alert"></p><div class="welcome-rules"><div>⏱ 35 минут с момента старта</div><div>🧠 Один правильный ответ</div><div>↔ Можно возвращаться к заданиям</div></div><p>Оценки: 0–39% → «2»; 40–64% → «3»; 65–85% → «4»; 86–100% → «5».</p><button class="start-button" id="start">🚀 НАЧАТЬ КВЕСТ</button><p class="small">Одна попытка в этом браузере. Первый уход со страницы — предупреждение, второй — завершение. Обновление или закрытие завершает начатую попытку.</p></section>
+<div id="play" hidden><div id="seal" aria-hidden="true"><span id="watermark"></span></div><p id="notice" role="status" hidden></p><div class="progress-area"><div id="progressText" class="progress-text"></div><div class="progress"><div class="progress-bar" id="progressBar"></div></div><nav id="map" aria-label="Карта заданий"></nav></div><section class="slide active"><span class="question-number" id="number"></span><p id="topic" class="topic"></p><h2 id="question" class="question-title"></h2><div id="answers" class="answers"></div><p class="small">Ответ можно изменить до завершения.</p><div class="navigation"><button id="prev" class="nav-button prev">← Назад</button><button id="next" class="nav-button next">Далее →</button></div></section><div class="end-area"><button id="finish" class="nav-button finish">🏁 Завершить квест</button><div id="confirm" hidden role="alert"><p id="confirmText"></p><button id="yes" class="nav-button finish">Да, завершить</button> <button id="no" class="nav-button prev">Продолжить</button></div></div></div>
+<section id="result" class="result" aria-live="polite"><div class="big-character">💎</div><h2>Квест завершён!</h2><p id="resultName"></p><p class="score" id="score"></p><div class="percent" id="percent"></div><div class="grade" id="grade"></div><p class="message" id="message"></p><p id="elapsed"></p><button id="reviewButton" class="restart">📖 Ответы и решения</button><div id="review" hidden></div></section></main><footer>Математика · 8 класс · Неполные квадратные уравнения</footer></div><script>
+const questions=[["Распознай вид", "Какое квадратное уравнение неполное?", ["x² + 2x − 3 = 0", "2x² − 7 = 0", "3x² + x + 1 = 0", "2x − 7 = 0"], 1, "У уравнения 2x² − 7 = 0 коэффициент при x равен нулю."], ["Коэффициенты", "Чему равен b в уравнении 5x² − 20 = 0?", ["0", "5", "−20", "20"], 0, "Слагаемого с x нет, поэтому b = 0."], ["Коэффициенты", "Чему равен c после переноса всех слагаемых влево в 4x² = 12x?", ["12", "−12", "4", "0"], 3, "4x² − 12x = 0. Свободный член равен нулю."], ["Коэффициенты", "Чему равен b после переноса влево в 7x² = −3x?", ["−3", "7", "3", "0"], 2, "7x² + 3x = 0, поэтому b = 3."], ["Один корень", "Реши 9x² = 0.", ["x = 9", "x = 0", "Корней нет", "x = ±3"], 1, "После деления на 9 получаем x² = 0."], ["Переносим", "Реши 3x² − 48 = 0.", ["x = ±16", "x = 4", "x = ±4", "x = ±8"], 2, "3x² = 48, значит x² = 16 и x = ±4."], ["Переносим", "Реши 5x² + 20 = 0.", ["Корней нет", "x = ±2", "x = −2", "x = 0"], 0, "x² = −4. Квадрат действительного числа неотрицателен."], ["Переносим", "Реши 4x² = 1.", ["x = ±1/4", "x = 1/2", "x = ±2", "x = ±1/2"], 3, "x² = 1/4, откуда x = ±1/2."], ["Переносим", "Реши −2x² + 18 = 0.", ["x = ±9", "Корней нет", "x = ±3", "x = 3"], 2, "−2x² = −18, значит x² = 9."], ["Выносим", "Как разложить на множители 6x² − 9x?", ["3x(2x − 3)", "3x(2x + 3)", "x(6x − 3)", "3(2x − 3)"], 0, "Выносим общий множитель 3x."], ["Выносим", "Реши 4x² − 12x = 0.", ["0 и −3", "Только 3", "0 и 12", "0 и 3"], 3, "4x(x − 3) = 0. Отсюда x = 0 или x = 3."], ["Выносим", "Реши 6x² + 9x = 0.", ["0 и 3/2", "0 и −3/2", "Только −3/2", "0 и −9"], 1, "3x(2x + 3) = 0. Корни: 0 и −3/2."], ["Выносим", "Реши 2x² = 5x.", ["0 и −5/2", "Только 5/2", "0 и 5/2", "x = ±5/2"], 2, "x(2x − 5) = 0. Корни: 0 и 5/2."], ["Найди ошибку", "Ученик разделил x² = 8x на x и получил x = 8. Какой корень потерян?", ["0", "−8", "1", "−1"], 0, "Деление на x исключило x = 0. Запись x(x − 8) = 0 сохраняет оба корня."], ["Упрости уравнение", "Реши 3x(x − 2) = x².", ["0 и 2", "0 и 3", "Только 3", "0 и −3"], 1, "3x² − 6x = x², откуда 2x(x − 3) = 0."], ["Упрости уравнение", "Реши (x + 3)(x − 3) = 7.", ["x = ±2", "x = ±7", "x = 4", "x = ±4"], 3, "x² − 9 = 7, поэтому x² = 16."], ["Упрости уравнение", "Реши (x + 2)² = 4x + 29.", ["x = ±5", "x = ±3", "x = 5", "Корней нет"], 0, "x² + 4x + 4 = 4x + 29. После сокращения x² = 25."], ["Число корней", "Сколько различных действительных корней у 2x² + 7x = 0?", ["0", "1", "2", "3"], 2, "x(2x + 7) = 0. Корни 0 и −7/2 различны."], ["Параметр", "При каком k уравнение x² + k = 0 имеет два различных действительных корня?", ["k > 0", "k < 0", "k = 0", "При любом k"], 1, "Для двух различных корней уравнения x² = −k нужно −k > 0."], ["Задача из шахты", "Площадь квадратной площадки равна 81 м². Какова длина её стороны?", ["81 м", "40,5 м", "±9 м", "9 м"], 3, "Длина стороны положительна. Из x² = 81 получаем x = 9 м."]];
+const $=id=>document.getElementById(id);
+let current=0, choices=Array(questions.length).fill(null), running=false, deadline=0, started=0, timer=null;
+const gradeFor=p=>p<40?2:p<65?3:p<86?4:5;
+function updateProgress(){let n=choices.filter(x=>x!==null).length;$('progressText').textContent=`Задание ${current+1} из 20 · Ответов выбрано: ${n}/20`;$('progressBar').style.width=(n/20*100)+'%';}
+function mathText(el,text){el.replaceChildren();const parts=text.split(/(\d+\/\d+)/g);for(const t of parts){if(/^\d+\/\d+$/.test(t)){const [n,d]=t.split('/');const f=document.createElement('span');f.className='frac';f.setAttribute('aria-label',n+' / '+d);const top=document.createElement('span'),bottom=document.createElement('span');top.textContent=n;bottom.textContent=d;f.appendChild(top);f.appendChild(bottom);el.appendChild(f);}else{const span=document.createElement('span');span.textContent=t;el.appendChild(span);}}}
+function render(){const q=questions[current];$('number').textContent=`⛏ ЗАДАНИЕ ${current+1} / 20`;$('topic').textContent=q[0];mathText($('question'),q[1]);$('answers').replaceChildren();q[2].forEach((a,i)=>{let b=document.createElement('button');b.className='answer'+(choices[current]===i?' selected':'');mathText(b,a);b.setAttribute('aria-pressed',String(choices[current]===i));b.onclick=()=>{if(!running)return;choices[current]=i;saveAttempt();render();};$('answers').appendChild(b);});$('map').replaceChildren();questions.forEach((q,i)=>{let b=document.createElement('button');b.textContent=i+1;b.className=(choices[i]!==null?'done ':'')+(i===current?'current':'');b.setAttribute('aria-label',`Задание ${i+1}${choices[i]!==null?', ответ выбран':''}`);if(i===current)b.setAttribute('aria-current','step');b.onclick=()=>go(i);$('map').appendChild(b);});$('prev').disabled=current===0;$('next').textContent=current===19?'🏁 К результату':'Далее →';updateProgress();}
+function go(i){if(!running)return;current=Math.max(0,Math.min(19,i));$('confirm').hidden=true;render();}
+function tick(){if(!running)return;let left=Math.max(0,Math.ceil((deadline-Date.now())/1000));$('clock').textContent=`⏱ ${String(Math.floor(left/60)).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`;if(left===0)finish(true);}
+function askFinish(){if(!running)return;let n=choices.filter(x=>x===null).length;$('confirmText').textContent=n?`Не выбрано ответов: ${n}. Завершить? Пропущенные задания дадут 0 баллов.`:'Все ответы выбраны. Завершить квест и узнать результат?';$('confirm').hidden=false;$('confirm').scrollIntoView({block:'center',behavior:'smooth'});}
+function finish(timeout=false,reason="",write=true){if(!running)return;running=false;clearInterval(timer);if(write)saveAttempt(reason || (timeout?"Время вышло.":"Квест завершён."));let score=questions.reduce((n,q,i)=>n+(choices[i]===q[3]?1:0),0),p=score*5,g=gradeFor(p);$('play').hidden=true;$('result').classList.add('show');$('resultName').textContent=$('name').value.trim();$('score').textContent=`Добыто алмазов: ${score} из 20`;$('percent').textContent=p+'%';$('grade').textContent='Оценка: '+g;$('message').textContent=(reason ? reason+' ' : timeout?'Время вышло. ':'')+({2:'Шахта ещё хранит секреты! Открой разбор и повтори темы, в которых возникли трудности.',3:'Первые алмазы добыты! Разбор поможет укрепить знания.',4:'Отличная добыча! Разбери оставшиеся ошибки.',5:'Мастер неполных квадратных уравнений! Портал знаний открыт.'}[g]);let sec=Math.max(0,Math.min(2100,Math.floor(((endedAt || Date.now())-started)/1000)));$('elapsed').textContent=`Время: ${Math.floor(sec/60)} мин ${sec%60} с. Без ответа: ${choices.filter(x=>x===null).length}.`;$('review').replaceChildren();questions.forEach((q,i)=>{let d=document.createElement('article');d.className='review-item'+(choices[i]!==q[3]?' wrong':'');let h=document.createElement('h3');h.textContent=`${choices[i]===q[3]?'💎':'📌'} ${i+1}. ${q[1]}`;d.appendChild(h);[choices[i]===null?'Твой ответ: не выбран.':'Твой ответ: '+q[2][choices[i]],'Верный ответ: '+q[2][q[3]],'Решение: '+q[4]].forEach(t=>{let p=document.createElement('p');mathText(p,t);d.appendChild(p);});$('review').appendChild(d);});window.scrollTo({top:0,behavior:'smooth'});}
+const attemptKey = 'quadratic-quest-8-v1:' + location.pathname;
+let departures = 0, endedAt = 0, attemptId = '';
+function readAttempt(){
+    const value = localStorage.getItem(attemptKey);
+    return value ? JSON.parse(value) : null;
+}
+function saveAttempt(reason=''){
+    try {
+        if (reason) endedAt = Date.now();
+        localStorage.setItem(attemptKey, JSON.stringify({
+            id:attemptId, name:$('name').value.trim(), started, choices, reason, endedAt
+        }));
+        return true;
+    } catch {
+        return false;
+    }
+}
+function showSaved(attempt){
+    $('name').value = attempt.name;
+    $('welcome').hidden = true;
+    choices = attempt.choices;
+    started = attempt.started;
+    endedAt = attempt.endedAt || Date.now();
+    running = true;
+    const reason = attempt.reason || 'Предыдущая попытка прервана закрытием или обновлением страницы.';
+    finish(false, reason, !attempt.reason);
+}
+$('start').onclick=()=>{
+    const name = $('name').value.trim();
+    if (!name) {
+        $('nameError').textContent = 'Сначала введи фамилию и имя.';
+        $('name').focus();
+        return;
+    }
+    try {
+        const previous = readAttempt();
+        if (previous) {showSaved(previous); return;}
+    } catch {
+        $('nameError').textContent = 'Открой ссылку в обычном окне браузера с доступом к сохранению данных.';
+        return;
+    }
+    started = Date.now();
+    attemptId = started.toString(36) + '-' + Math.random().toString(36).slice(2);
+    if (!saveAttempt()) {
+        $('nameError').textContent = 'Браузер не разрешил сохранить попытку.';
+        return;
+    }
+    $('nameError').textContent = '';
+    $('welcome').hidden = true;
+    $('play').hidden = false;
+    $('player').textContent = '🧑‍🎮 ' + name;
+    $('watermark').textContent = name;
+    running = true;
+    deadline = started + 35*60*1000;
+    render();
+    timer = setInterval(tick,500);
+    tick();
+    window.scrollTo(0,0);
+};
+try {
+    const previous = readAttempt();
+    if (previous) showSaved(previous);
+} catch {
+    $('nameError').textContent = 'Не удалось прочитать сохранённую попытку.';
+}
+document.addEventListener('visibilitychange', ()=>{
+    if (!running) return;
+    document.body.classList.toggle('covered', document.hidden);
+    if (!document.hidden) {tick(); return;}
+    departures++;
+    if (departures === 1) {
+        $('notice').textContent = 'Предупреждение 1 из 2. При следующем уходе квест завершится.';
+        $('notice').hidden = false;
+    } else {
+        finish(false,'Квест завершён после второго ухода со страницы.');
+    }
+});
+window.addEventListener('pagehide', ()=>{
+    if (running) finish(false,'Квест завершён при закрытии или обновлении страницы.');
+});
+window.addEventListener('storage', event=>{
+    if (event.key === attemptKey && running && event.newValue) {
+        const other = JSON.parse(event.newValue);
+        if (other.id !== attemptId) finish(false,'Обнаружена попытка в другой вкладке.',false);
+    }
+});
+let coverTimer;
+function protectPrintScreen(event){
+    if (!running || event.key !== 'PrintScreen') return;
+    event.preventDefault();
+    document.body.classList.add('covered');
+    clearTimeout(coverTimer);
+    coverTimer = setTimeout(()=>{
+        if (!document.hidden) document.body.classList.remove('covered');
+    },1300);
+}
+document.addEventListener('keydown',protectPrintScreen);
+document.addEventListener('keyup',protectPrintScreen);
+for (const type of ['copy','contextmenu','dragstart']) {
+    $('play').addEventListener(type,event=>event.preventDefault());
+}
+$('prev').onclick=()=>go(current-1);$('next').onclick=()=>current===19?askFinish():go(current+1);$('finish').onclick=askFinish;$('yes').onclick=()=>finish();$('no').onclick=()=>{$('confirm').hidden=true;};$('reviewButton').onclick=()=>{$('review').hidden=!$('review').hidden;$('reviewButton').textContent=$('review').hidden?'📖 Ответы и решения':'Скрыть разбор';};
+</script></body></html>
