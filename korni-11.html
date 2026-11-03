@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Корни n-й степени · 11 класс</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eef5ff;color:#132b45;font:16px system-ui,sans-serif}
+main{max-width:760px;margin:auto;padding:18px}header{background:#102d4b;color:#fff;padding:24px;border-radius:22px}
+h1{font-size:clamp(1.65rem,5vw,2.6rem);margin:.35em 0}h2{font-size:clamp(1.25rem,4vw,1.65rem);line-height:1.45}
+small,.tag{font-weight:700;letter-spacing:.05em}.card{background:white;border:1px solid #c6d8e8;border-radius:19px;margin-top:15px;padding:20px}
+.fields,.options,.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+label{display:grid;gap:6px;font-weight:600}input,button,a.button{font:inherit;border-radius:10px;padding:11px;min-height:44px}
+input{width:100%;border:1px solid #7089a1}button,a.button{border:1px solid #375974;background:white;color:#173953;cursor:pointer}
+.primary,a.button{background:#0a5670;color:#fff;padding-inline:17px}a.button{display:inline-block;text-decoration:none}
+button:disabled{opacity:.5;cursor:default}button[aria-pressed=true]{background:#d3f5eb;border:2px solid #087963}
+:focus-visible{outline:3px solid #b35c00;outline-offset:3px}.bar,.controls{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center}
+nav{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}nav button{min-width:42px}nav button.done{background:#dcf3ec}nav button[aria-current=step]{border:2px solid #12607e}
+#clock{font-variant-numeric:tabular-nums;font-size:1.4rem;font-weight:800}#clock.urgent{color:#a02217}
+#notice:not(:empty){padding:12px;background:#fff0cf;border-radius:9px;color:#673605}.options button{text-align:left;overflow-wrap:anywhere}
+#watermark{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;overflow:hidden;z-index:10}
+#watermark span{transform:rotate(-26deg);color:#102d4b;opacity:.12;font-size:clamp(24px,7vw,70px);font-weight:900;max-width:90vw;overflow-wrap:anywhere}
+[hidden]{display:none!important}@media(max-width:490px){main{padding:11px}.card,header{padding:15px}.options{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<header><small>АЛГЕБРА · 11 КЛАСС</small><h1>Корни n-й степени<br>и их свойства</h1><div>10 заданий · 7 минут · 1 попытка</div></header>
+
+<section class="card" id="intro" hidden>
+<h2>Перед началом</h2>
+<ul><li>На каждое задание выберите один ответ. Можно вернуться к предыдущим заданиям.</li>
+<li>Первое скрытие вкладки вызывает предупреждение. Второе завершает тест.</li>
+<li>Таймер продолжает идти при обновлении и потере связи. Одна попытка в этом браузере.</li></ul>
+<form id="form">
+<div class="fields">
+<label>Фамилия<input id="surname" maxlength="70" required autocomplete="family-name"></label>
+<label>Имя<input id="given" maxlength="70" required autocomplete="given-name"></label>
+<label>Класс<input id="className" maxlength="4" required placeholder="11А"></label>
+
+</div><p><button class="primary" id="start" type="submit">Начать тест</button></p>
+</form>
+</section>
+<p id="notice" role="status" aria-live="polite"></p>
+<section class="card" id="quiz" hidden>
+<div class="bar"><strong id="progress"></strong><span id="clock" aria-label="Осталось времени">07:00</span></div>
+<nav id="map" aria-label="Перейти к заданию"></nav>
+<div id="level" class="tag"></div><h2 id="question"></h2><div class="options" id="options"></div>
+<hr><div class="controls"><button id="prev">← Назад</button><button id="next">Далее →</button><button class="primary" id="finish">Завершить</button></div>
+<div id="confirm" hidden><p>Сдать текущие ответы?</p><button class="primary" id="yes">Да, сдать</button> <button id="no">Продолжить</button></div>
+<div id="watermark" aria-hidden="true"><span id="mark"></span></div>
+</section>
+<section class="card" id="result" hidden aria-live="polite"><h2 id="score"></h2><p id="reason"></p><p id="resultName"></p></section>
+<noscript>Включите JavaScript, чтобы пройти тест.</noscript>
+</main>
+<script>
+
+const BANK = [["A","Вычислите ⁴√81.",["3","−3","9","±3"],0],["A","Вычислите ³√(−125).",["5","−5","−25","Корень не существует"],1],["A","Вычислите ⁵√(32/243).",["2/3","3/2","4/9","2/9"],0],["A","Чему равен ⁶√(a⁶) при любом действительном a?",["a","−a","|a|","a²"],2],["B","Вычислите ³√12 · ³√18.",["3","6","9","18"],1],["B","Вычислите ⁴√162 ÷ ⁴√2.",["2","3","9","81"],1],["B","Вынесите множитель из-под корня ⁴√(48a⁴), если a < 0.",["2a · ⁴√3","−2a · ⁴√3","−4a · ⁴√3","−2a · ⁴√6"],1],["B","Внесите множитель под знак корня: −2 · ³√7.",["³√(−14)","³√56","³√(−56)","³√(−28)"],2],["C","Упростите (⁴√8 · ⁶√4) ÷ ¹²√128.",["1","√2","³√2","2"],1],["C","Упростите ³√(54x⁶) − ³√(16x³) + ³√(2x³).",["(3x² − x) · ³√2","(3x² + x) · ³√2","(3x² − 2x) · ³√2","(3x − x²) · ³√2"],0]];
+const $=id=>document.getElementById(id);
+const storageKey='roots11-local-v1:'+location.pathname;
+let session, questions=[], index=0, active=false;
+const remaining=()=>session.deadline-Date.now();
+const notice=message=>{$('notice').textContent=message;};
+function store(){
+  session.index=index;
+  try {localStorage.setItem(storageKey,JSON.stringify(session));}
+  catch {notice('Браузер не смог сохранить данные попытки. Оставьте вкладку открытой.');}
+}
+function restore(){
+  questions=session.questions;
+  index=session.index;
+  $('intro').hidden=true;
+  if (session.reason) {showResult();return;}
+  active=true;
+  $('mark').textContent=session.student.slice(0,2).join(' ');
+  $('quiz').hidden=false;
+  if(session.hidden.length) notice('Предупреждение. Следующее скрытие вкладки завершит тест.');
+  render();
+  tick();
+}
+try {
+  const probe=storageKey+'-probe';
+  localStorage.setItem(probe,'1');
+  localStorage.removeItem(probe);
+  session=JSON.parse(localStorage.getItem(storageKey)||'null');
+  if(session) restore();
+  else $('intro').hidden=false;
+} catch {
+  notice('Откройте тест в обычной вкладке браузера, где разрешено сохранять данные.');
+}
+$('form').onsubmit=event=>{
+  event.preventDefault();
+  const student=['surname','given','className'].map(id=>$(id).value.trim());
+  if(student.some(value=>!value)) {notice('Заполните фамилию, имя и класс.');return;}
+  try {
+    const previous=localStorage.getItem(storageKey);
+    if(previous) {session=JSON.parse(previous);restore();return;}
+    session={student,deadline:Date.now()+420000,index:0,hidden:[],reason:'',
+      questions:BANK.map(([level,q,options,correct])=>{
+        const order=options.map((_,i)=>i);
+        for(let i=order.length-1;i>0;i--){
+          const j=Math.floor(Math.random()*(i+1));
+          [order[i],order[j]]=[order[j],order[i]];
+        }
+        return {level,q,options:order.map(i=>options[i]),correct:order.indexOf(correct),selected:-1};
+      })};
+    localStorage.setItem(storageKey,JSON.stringify(session));
+    restore();
+  } catch {notice('Не удалось начать попытку. Проверьте настройки браузера.');}
+};
+function showResult(){
+  active=false;
+  const score=session.questions.filter(q=>q.selected===q.correct).length;
+  const percent=score*10;
+  const grade=percent<40?2:percent<65?3:percent<86?4:5;
+  $('intro').hidden=true;
+  $('quiz').hidden=true;
+  $('score').textContent=score+' / 10 · '+percent+'% · Оценка «'+grade+'»';
+  $('reason').textContent=session.reason+' · Скрытий вкладки: '+session.hidden.length;
+  $('resultName').textContent=session.student.join(' · ');
+  $('result').hidden=false;
+  notice('');
+}
+function finish(reason){
+  if(!active)return;
+  session.reason=reason;
+  store();
+  showResult();
+}
+function tick(){
+  if(!active)return;
+  const seconds=Math.max(0,Math.ceil(remaining()/1000));
+  $('clock').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');
+  $('clock').classList.toggle('urgent',seconds<60);
+  if(!seconds)finish('Время истекло');
+}
+$('prev').onclick=()=>go(index-1);
+$('next').onclick=()=>go(index+1);
+$('finish').onclick=()=>{$('confirm').hidden=false;$('yes').focus();};
+$('yes').onclick=()=>finish('Тест завершён');
+$('no').onclick=()=>{$('confirm').hidden=true;};
+document.addEventListener('visibilitychange',()=>{
+  if(!active)return;
+  tick();
+  if(!active||!document.hidden)return;
+  session.hidden.push(Date.now());
+  if(session.hidden.length>=2)finish('Завершён после второго ухода со страницы');
+  else {
+    store();
+    notice('Предупреждение. Следующее скрытие вкладки завершит тест.');
+  }
+});
+window.addEventListener('storage',event=>{
+  if(event.key!==storageKey||!event.newValue)return;
+  if(active||!$('intro').hidden) {session=JSON.parse(event.newValue);restore();}
+});
+setInterval(tick,250);
+  function render(){
+    const q=questions[index];
+    const answered=questions.filter(item=>item.selected>=0).length;
+    $('progress').textContent='Задание '+(index+1)+' из 10 · Ответов '+answered+'/10';
+    $('level').textContent='Уровень '+q.level;
+    $('question').textContent=q.q;
+    $('options').replaceChildren();
+    q.options.forEach((label,i)=>{
+      const button=document.createElement('button');
+      button.textContent=label;
+      button.setAttribute('aria-pressed',String(q.selected===i));
+      button.onclick=()=>{
+        if (!active || remaining()<=0) return;
+        q.selected=i;
+        store();
+        render();
+        $('options').children[i].focus();
+      };
+      $('options').append(button);
+    });
+    $('map').replaceChildren();
+    questions.forEach((item,i)=>{
+      const button=document.createElement('button');
+      button.textContent=i+1;
+      button.classList.toggle('done',item.selected>=0);
+      if(i===index) button.setAttribute('aria-current','step');
+      button.onclick=()=>go(i);
+      $('map').append(button);
+    });
+    $('prev').disabled=index===0;
+    $('next').disabled=index===questions.length-1;
+  }
+  function go(i){
+    if (!active || !questions[i]) return;
+    index=i;
+    store();
+    $('confirm').hidden=true;
+    render();
+  }
+
+</script>
+</body>
+</html>
