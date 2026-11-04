@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ru"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Тригонометрические уравнения · 10 класс</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#edf4fa;color:#17344e;font:16px system-ui,sans-serif}
+main{max-width:760px;margin:auto;padding:16px}header,section{padding:clamp(16px,4vw,26px);border-radius:18px}
+header{background:#133653;color:#fff}header p{margin-bottom:0}h1{font-size:clamp(25px,6vw,42px);line-height:1.15;margin:.35em 0}
+section{margin-top:14px;background:#fff;border:1px solid #cbdce9}label{display:block;margin:12px 0}
+input,button{font:inherit;min-height:44px;padding:9px 12px;border:1px solid #6e8aa1;border-radius:9px}
+input{display:block;width:100%;margin-top:4px}button{background:#f2f8fc;color:#17344e;cursor:pointer}button:disabled{opacity:.5;cursor:default}
+.primary{background:#08657b;color:white}button[aria-pressed=true],button.done{background:#d1f3e8}
+button[aria-current=step]{outline:2px solid #08657b}nav,.actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}.options button{text-align:left;overflow-wrap:anywhere}
+.bar{display:flex;justify-content:space-between;gap:12px;font-weight:700}#clock{font-variant-numeric:tabular-nums;font-size:1.3rem}
+#question{line-height:1.4}#notice:not(:empty){padding:12px;background:#fff1cb;border-radius:8px}#mark{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;overflow:hidden}
+#mark span{opacity:.12;font-weight:800;font-size:clamp(25px,7vw,65px);max-width:85vw;overflow-wrap:anywhere;transform:rotate(-25deg)}
+[hidden]{display:none!important}@media(max-width:500px){.options{grid-template-columns:1fr}}
+</style>
+<main>
+<header><small>АЛГЕБРА · 10 КЛАСС</small><h1>Тригонометрические уравнения</h1><p>10 заданий · 7 минут · 1 попытка в этом браузере</p></header>
+<p id="notice" role="status"></p>
+<section id="intro" hidden><h2>Перед началом</h2>
+<p>Выберите один ответ в каждом задании. Углы в радианах, k — целое число. К заданиям можно возвращаться до завершения.</p>
+<p>Первое скрытие вкладки вызовет предупреждение. Второе завершит тест. Обновление страницы не сбрасывает таймер.</p>
+<form id="form"><label>Фамилия<input id="surname" autocomplete="family-name" maxlength="60" required></label>
+<label>Имя<input id="given" autocomplete="given-name" maxlength="60" required></label>
+<label>Класс<input id="className" placeholder="10А" maxlength="12" required></label>
+<button class="primary">Начать тест</button></form></section>
+<section id="quiz" hidden>
+<div class="bar"><span id="progress"></span><span id="clock" aria-label="Осталось времени"></span></div>
+<nav id="map" aria-label="Номера заданий"></nav><strong id="level"></strong><h2 id="question"></h2>
+<div id="options" class="options"></div>
+<div class="actions"><button id="prev">← Назад</button><button id="next">Далее →</button><button class="primary" id="finish">Завершить</button></div>
+<div id="confirm" hidden><p>Завершить тест с текущими ответами?</p><button class="primary" id="yes">Да, завершить</button> <button id="no">Продолжить</button></div>
+<div id="mark" aria-hidden="true"><span id="nameMark"></span></div></section>
+<section id="result" hidden aria-live="polite"><h2 id="score"></h2><p id="student"></p><p id="reason"></p></section>
+<noscript>Для теста требуется JavaScript.</noscript>
+</main>
+<script>
+const BANK=[
+ ['A','Решите sin(2x) = 1.',['π/4 + πk','π/2 + πk','π/4 + 2πk','−π/4 + πk'],0],
+ ['A','Решите cos(3x) = 0.',['π/3 + πk/3','π/6 + πk','π/6 + πk/3','πk/3'],2],
+ ['A','Решите tg(2x) = 1.',['π/4 + πk/2','π/8 + πk/2','π/8 + πk','−π/8 + πk/2'],1],
+ ['A','Решите cos(x − π/6) = −1.',['5π/6 + 2πk','7π/6 + πk','π/6 + 2πk','7π/6 + 2πk'],3],
+ ['B','Решите sin(2x + π/6) = 1/2.',['πk или π/3 + πk','πk или π/6 + πk','π/3 + πk','2πk или π/3 + 2πk'],0],
+ ['B','Решите cos(2x − π/3) = 1/2.',['±π/3 + πk','π/6 + πk','πk или π/3 + πk','πk или π/6 + πk'],2],
+ ['B','Упростите левую часть и решите 2 sin x · cos x = −1.',['π/4 + πk','−π/4 + πk','−π/2 + πk','−π/4 + 2πk'],1],
+ ['B','Упростите левую часть и решите cos²x − sin²x = −√2/2.',['±π/8 + πk','±3π/4 + 2πk','±3π/8 + 2πk','±3π/8 + πk'],3],
+ ['C','Решите sin(2x) · cos x + cos(2x) · sin x = √3/2.',['π/9 + 2πk/3 или 2π/9 + 2πk/3','±π/9 + 2πk/3','π/9 + 2πk/3','π/3 + 2πk или 2π/3 + 2πk'],0],
+ ['C','Решите cos(3x) · cos x + sin(3x) · sin x = −1/2.',['±π/6 + πk','±π/3 + 2πk','±π/3 + πk','±π/2 + πk'],2]
+];
+const $=id=>document.getElementById(id);
+const key='trig10-test-v1:'+location.pathname;
+let state=null;
+function save(){localStorage.setItem(key,JSON.stringify(state));}
+function finish(reason){
+ if(!state||state.reason)return;
+ state.reason=reason;
+ save();
+ show();
+}
+function tick(){
+ if(!state||state.reason)return;
+ const seconds=Math.max(0,Math.ceil((state.deadline-Date.now())/1000));
+ $('clock').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');
+ if(seconds===0)finish('Время истекло');
+}
+function show(){
+ $('intro').hidden=Boolean(state);
+ $('quiz').hidden=!state||Boolean(state.reason);
+ $('result').hidden=!state||!state.reason;
+ $('notice').textContent=state&&!state.reason&&state.hides.length?'Предупреждение. Следующее скрытие вкладки завершит тест.':'';
+ if(!state)return;
+ if(state.reason){
+  const score=BANK.filter((row,i)=>state.answers[i]===row[3]).length;
+  const percent=score*10, grade=percent<40?2:percent<65?3:percent<86?4:5;
+  $('score').textContent=score+' / 10 · '+percent+'% · Оценка «'+grade+'»';
+  $('student').textContent=state.student.join(' · ');
+  $('reason').textContent=state.reason+' · Скрытий вкладки: '+state.hides.length;
+  return;
+ }
+ $('nameMark').textContent=state.student.slice(0,2).join(' ');
+ render();
+ tick();
+}
+function go(index){
+ if(!state||state.reason)return;
+ state.index=index;
+ $('confirm').hidden=true;
+ save();
+ render();
+}
+function render(){
+ const i=state.index, [level,question,options]=BANK[i];
+ $('level').textContent='Уровень '+level;
+ $('question').textContent=question;
+ $('progress').textContent='Задание '+(i+1)+' из 10 · Ответов '+state.answers.filter(a=>a!==null).length;
+ $('options').replaceChildren(...state.orders[i].map(j=>{
+  const b=document.createElement('button');
+  b.textContent=options[j].split(' или ').map(s=>'x = '+s).join(' или ');
+  b.setAttribute('aria-pressed',String(state.answers[i]===j));
+  b.onclick=()=>{
+   tick();
+   if(state.reason)return;
+   state.answers[i]=j;
+   save();
+   render();
+   $('options').children[state.orders[i].indexOf(j)].focus();
+  };
+  return b;
+ }));
+ $('map').replaceChildren(...BANK.map((_,j)=>{
+  const b=document.createElement('button');
+  b.textContent=j+1;
+  b.classList.toggle('done',state.answers[j]!==null);
+  if(j===i)b.setAttribute('aria-current','step');
+  b.onclick=()=>go(j);
+  return b;
+ }));
+ $('prev').disabled=i===0;
+ $('next').disabled=i===9;
+}
+$('form').onsubmit=event=>{
+ event.preventDefault();
+ const student=['surname','given','className'].map(id=>$(id).value.trim());
+ if(student.some(s=>!s)){$('notice').textContent='Заполните фамилию, имя и класс.';return;}
+ try{
+  const previous=localStorage.getItem(key);
+  if(previous){state=JSON.parse(previous);show();return;}
+  const orders=BANK.map(()=>{
+   const order=[0,1,2,3];
+   for(let i=3;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [order[i],order[j]]=[order[j],order[i]];
+   }
+   return order;
+  });
+  state={student,orders,answers:Array(10).fill(null),deadline:Date.now()+420000,index:0,hides:[],reason:''};
+  save();
+  show();
+ }catch{$('notice').textContent='Откройте тест в браузере с доступом к локальному хранилищу.';}
+};
+$('prev').onclick=()=>go(state.index-1);
+$('next').onclick=()=>go(state.index+1);
+$('finish').onclick=()=>{$('confirm').hidden=false;};
+$('yes').onclick=()=>{tick();finish('Тест завершён');};
+$('no').onclick=()=>{$('confirm').hidden=true;};
+document.addEventListener('visibilitychange',()=>{
+ tick();
+ if(!state||state.reason||!document.hidden)return;
+ state.hides.push(Date.now());
+ if(state.hides.length>=2)finish('Завершён после второго скрытия вкладки');
+ else {save();$('notice').textContent='Предупреждение. Следующее скрытие вкладки завершит тест.';}
+});
+window.addEventListener('storage',event=>{
+ if(event.key===key&&event.newValue){state=JSON.parse(event.newValue);show();}
+});
+try{state=JSON.parse(localStorage.getItem(key)||'null');show();}
+catch{$('notice').textContent='Откройте тест в обычной вкладке браузера, где разрешено хранение данных.';}
+setInterval(tick,250);
+</script>
+</html>
