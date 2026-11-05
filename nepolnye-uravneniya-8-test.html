@@ -1,0 +1,112 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Неполные квадратные уравнения · 8 класс</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#edf4fa;color:#15334e;font:16px/1.5 system-ui,sans-serif}main{max-width:760px;margin:auto;padding:16px}header,section{padding:clamp(16px,4vw,28px);border-radius:18px}header{background:#183b63;color:white}h1{font-size:clamp(25px,6vw,38px);line-height:1.15;margin:.4em 0}header p{margin-bottom:0}section{margin-top:15px;background:white;border:1px solid #c8daea}label{display:block;margin:10px 0}input,button{font:inherit;border:1px solid #718ca4;border-radius:9px;padding:9px 12px;min-height:44px}input{display:block;width:100%;margin-top:4px}button{background:#f2f8fc;color:#15334e;cursor:pointer}button:disabled{opacity:.5;cursor:default}.primary{background:#08657b;color:white}button[aria-pressed=true],.done{background:#d1f3e8}button[aria-current=step]{outline:2px solid #08657b}nav,.actions,.bar{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.bar{justify-content:space-between;font-weight:700}#clock{font-size:1.3rem;font-variant-numeric:tabular-nums}#options{display:grid;grid-template-columns:1fr 1fr;gap:8px}#options button{text-align:left}#notice:not(:empty){background:#fff0c8;border-radius:9px;padding:12px}#errors li{margin:14px 0}#errors p{margin:4px 0}[hidden]{display:none!important}@media(max-width:510px){#options{grid-template-columns:1fr}}
+</style></head><body><main>
+<header><small>АЛГЕБРА · 8 КЛАСС</small><h1>Неполные квадратные уравнения</h1><p>10 заданий · 10 минут · 1 попытка в браузере</p></header>
+<p id="notice" role="status"></p>
+<section id="intro" hidden><h2>Перед началом</h2>
+<p>Решайте уравнения в действительных числах. В каждом задании один правильный ответ. За него начисляется 1 балл. К заданиям можно возвращаться.</p>
+<p>Первое скрытие вкладки вызовет предупреждение, второе завершит тест. После обновления страницы отсчёт продолжится. Данные сохраняются в браузере.</p>
+<form id="form">
+<label>Фамилия<input id="surname" required maxlength="60" autocomplete="family-name"></label>
+<label>Имя<input id="given" required maxlength="60" autocomplete="given-name"></label>
+<label>Класс<input id="className" required maxlength="12" placeholder="8Б"></label>
+<button class="primary">Начать тест</button></form></section>
+<section id="quiz" hidden><div class="bar"><span id="progress"></span><span id="clock" aria-label="Осталось времени"></span></div>
+<nav id="map" aria-label="Номера заданий"></nav><strong id="level"></strong><h2 id="question"></h2><div id="options"></div>
+<div class="actions"><button id="prev">← Назад</button><button id="next">Далее →</button><button id="finish" class="primary">Завершить</button></div>
+<div id="confirm" hidden><p>Завершить тест с текущими ответами?</p><button id="yes" class="primary">Да, завершить</button> <button id="no">Продолжить</button></div></section>
+<section id="result" hidden aria-live="polite"><h2 id="score"></h2><p id="student"></p><p id="reason"></p><h3>Разбор ошибок</h3><p id="perfect" hidden>В выбранных ответах ошибок нет.</p><ol id="errors"></ol></section>
+<noscript>Для прохождения теста включите JavaScript.</noscript>
+</main><script>
+const bank=[
+ ['A','Какое уравнение является неполным квадратным?',['2x² − 7 = 0','2x² + 3x − 7 = 0','3x − 7 = 0','x³ − 7 = 0'],'В уравнении 2x² − 7 = 0 коэффициент при x равен нулю.'],
+ ['A','Решите 7x² = 0.',['x = 0','x = 7','x = ±7','Корней нет'],'Делим обе части на 7. Получаем x² = 0, откуда x = 0.'],
+ ['A','Решите x² − 36 = 0.',['x = −6 или x = 6','x = 6','x = −6','x = −36 или x = 36'],'Переносим −36 вправо. Из x² = 36 получаем x = ±6.'],
+ ['A','Решите x² + 4x = 0.',['x = 0 или x = −4','x = −4','x = 0 или x = 4','x = −4 или x = 4'],'Выносим x: x(x + 4) = 0. Тогда x = 0 или x + 4 = 0, то есть x = −4.'],
+ ['B','Решите −3x² + 75 = 0.',['x = −5 или x = 5','x = 5','x = −25 или x = 25','Корней нет'],'Переносим 75: −3x² = −75. Делим на −3: x² = 25. Значит, x = ±5.'],
+ ['B','Решите 4x² + 16 = 0.',['Корней нет','x = −2 или x = 2','x = −4','x = 0'],'Переносим 16 и делим на 4. Получаем x² = −4. Квадрат действительного числа неотрицателен.'],
+ ['B','Решите 6x² = 9x.',['x = 0 или x = 3/2','x = 3/2','x = 0 или x = −3/2','x = 0 или x = 2/3'],'Переносим 9x влево и выносим 3x: 3x(2x − 3) = 0. Отсюда x = 0 или x = 3/2.'],
+ ['B','Решите 2x² − 18 = x² − 2.',['x = −4 или x = 4','x = −2 или x = 2','x = 4','x = −16 или x = 16'],'Собираем члены с x² слева, числа справа: x² = 18 − 2 = 16. Значит, x = ±4.'],
+ ['C','Решите (x + 3)² = 6x + 25.',['x = −4 или x = 4','x = −5 или x = 5','x = 4','Корней нет'],'Раскрываем скобки: x² + 6x + 9 = 6x + 25. Сокращаем 6x и получаем x² = 16. Значит, x = ±4.'],
+ ['C','Решите 2x(x − 3) − (x − 2)(x + 2) = 4.',['x = 0 или x = 6','x = 6','x = 0 или x = −6','x = 0 или x = 3'],'Раскрываем скобки: 2x² − 6x − (x² − 4) = 4. Упрощаем: x² − 6x = 0. Из x(x − 6) = 0 получаем x = 0 или x = 6.']
+];
+const $=id=>document.getElementById(id), key='nepolnye-uravneniya-8-test-v1';
+let state=null;
+function read(){return JSON.parse(localStorage.getItem(key)||'null');}
+function save(){localStorage.setItem(key,JSON.stringify(state));}
+function finish(reason){if(!state||state.reason)return;state.reason=reason;save();show();}
+function tick(){
+ if(!state||state.reason)return;
+ const s=Math.max(0,Math.ceil((state.deadline-Date.now())/1000));
+ $('clock').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+ if(!s)finish('Время истекло.');
+}
+function show(){
+ $('intro').hidden=Boolean(state);$('quiz').hidden=!state||Boolean(state.reason);$('result').hidden=!state||!state.reason;
+ $('notice').textContent=state&&!state.reason&&state.hides===1?'Предупреждение. Следующее скрытие вкладки завершит тест.':'';
+ if(!state)return;
+ if(!state.reason){render();tick();return;}
+ const wrong=bank.map((_,i)=>i).filter(i=>state.answers[i]!==null&&state.answers[i]!==0);
+ const points=state.answers.filter(x=>x===0).length, percent=points*10;
+ const grade=percent<40?2:percent<65?3:percent<86?4:5;
+ $('score').textContent=points+' / 10 · '+percent+'% · Оценка «'+grade+'»';
+ $('student').textContent=state.student.join(' · ');
+ $('reason').textContent=state.reason+' Пропущено заданий: '+state.answers.filter(x=>x===null).length+'.';
+ $('perfect').hidden=wrong.length>0;
+ $('errors').replaceChildren(...wrong.map(i=>{
+  const li=document.createElement('li');li.value=i+1;
+  const [,question,options,explanation]=bank[i];
+  for(const line of [question,'Ваш ответ — '+options[state.answers[i]],'Решение. '+explanation]){
+   const p=document.createElement('p');p.textContent=line;li.append(p);
+  }
+  return li;
+ }));
+}
+function go(i){tick();if(!state||state.reason||!bank[i])return;state.index=i;$('confirm').hidden=true;save();render();}
+function render(){
+ const i=state.index,[level,question,options]=bank[i];
+ $('level').textContent='Уровень '+level;$('question').textContent=question;
+ $('progress').textContent='Задание '+(i+1)+' из 10 · Ответов '+state.answers.filter(x=>x!==null).length;
+ $('options').replaceChildren(...state.order[i].map((j,position)=>{
+  const b=document.createElement('button');b.textContent=options[j];
+  b.setAttribute('aria-pressed',String(state.answers[i]===j));
+  b.onclick=()=>{tick();if(state.reason)return;state.answers[i]=j;save();render();$('options').children[position].focus();};
+  return b;
+ }));
+ $('map').replaceChildren(...bank.map((_,j)=>{
+  const b=document.createElement('button');b.textContent=j+1;b.classList.toggle('done',state.answers[j]!==null);
+  if(i===j)b.setAttribute('aria-current','step');b.onclick=()=>go(j);return b;
+ }));
+ $('prev').disabled=i===0;$('next').disabled=i===9;
+}
+$('form').onsubmit=e=>{
+ e.preventDefault();
+ const student=['surname','given','className'].map(id=>$(id).value.trim());
+ if(student.some(v=>!v)){$('notice').textContent='Заполните фамилию, имя и класс.';return;}
+ try{
+  const previous=read();if(previous){state=previous;show();return;}
+  const order=bank.map(()=>{
+   const a=[0,1,2,3];
+   for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+   return a;
+  });
+  state={student,order,answers:Array(10).fill(null),index:0,deadline:Date.now()+600000,hides:0,reason:''};
+  save();show();
+ }catch{$('notice').textContent='Для запуска разрешите локальное хранение данных в браузере.';}
+};
+$('prev').onclick=()=>go(state.index-1);$('next').onclick=()=>go(state.index+1);
+$('finish').onclick=()=>{$('confirm').hidden=false;};$('no').onclick=()=>{$('confirm').hidden=true;};
+$('yes').onclick=()=>{tick();finish('Тест завершён.');};
+document.addEventListener('visibilitychange',()=>{
+ tick();
+ if(!state||state.reason||!document.hidden)return;
+ state.hides++;
+ if(state.hides>=2)finish('Тест завершён после второго скрытия вкладки.');
+ else{save();$('notice').textContent='Предупреждение. Следующее скрытие вкладки завершит тест.';}
+});
+window.addEventListener('storage',e=>{if(e.key===key&&e.newValue){state=JSON.parse(e.newValue);show();}});
+try{state=read();show();}catch{$('notice').textContent='Откройте тест в обычной вкладке браузера с доступом к локальному хранению.';}
+setInterval(tick,250);
+</script></body></html>
