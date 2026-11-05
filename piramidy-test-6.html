@@ -1,0 +1,107 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Боковая и полная поверхность пирамид · 10 класс</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eef4f9;color:#162f46;font:16px/1.5 system-ui,sans-serif}main{max-width:760px;margin:auto;padding:16px}header,section{padding:clamp(16px,4vw,28px);border-radius:18px}header{background:#173854;color:white}header p{margin-bottom:0}h1{font-size:clamp(24px,6vw,37px);line-height:1.14;margin:.35em 0}section{background:white;border:1px solid #cbdce9;margin-top:15px}label{display:block;margin:10px 0}input,button{font:inherit;min-height:44px;padding:9px 12px;border:1px solid #68849a;border-radius:9px}input{display:block;width:100%}button{background:#f2f8fc;color:#17344e;cursor:pointer}button:disabled{opacity:.5;cursor:default}.primary{background:#086376;color:white}button[aria-pressed=true],.done{background:#d1f3e8}button[aria-current=step]{outline:2px solid #086376}nav,.actions,.bar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.bar{justify-content:space-between;font-weight:700}#clock{font-size:1.25rem;font-variant-numeric:tabular-nums}#options{display:grid;grid-template-columns:1fr 1fr;gap:8px}#options button{text-align:left;overflow-wrap:anywhere}#notice:not(:empty){background:#fff0c7;padding:12px;border-radius:8px}#errors li{margin:14px 0}#errors p{margin:4px 0}[hidden]{display:none!important}@media(max-width:520px){#options{grid-template-columns:1fr}}
+</style></head><body><main>
+<header><small>ГЕОМЕТРИЯ · 10 КЛАСС</small><h1>Боковая и полная поверхность пирамиды и усечённой пирамиды</h1><p>10 заданий · 10 минут · 1 попытка в браузере</p></header>
+<p id="notice" role="status"></p>
+<section id="intro" hidden><h2>Перед началом</h2>
+<p>Выберите один ответ в каждом задании. За правильный ответ — 1 балл. К заданиям можно возвращаться.</p>
+<p>Первое скрытие вкладки вызовет предупреждение, второе завершит тест. При обновлении страницы таймер продолжит отсчёт.</p>
+<form id="form"><label>Фамилия<input id="surname" required maxlength="60" autocomplete="family-name"></label><label>Имя<input id="given" required maxlength="60" autocomplete="given-name"></label><label>Класс<input id="className" required maxlength="12" placeholder="10А"></label><button class="primary">Начать тест</button></form></section>
+<section id="quiz" hidden><div class="bar"><span id="progress"></span><span id="clock" aria-label="Осталось времени"></span></div>
+<nav id="map" aria-label="Номера заданий"></nav><strong id="level"></strong><h2 id="question"></h2><div id="options"></div>
+<div class="actions"><button id="prev">← Назад</button><button id="next">Далее →</button><button class="primary" id="finish">Завершить</button></div>
+<div id="confirm" hidden><p>Завершить тест с текущими ответами?</p><button class="primary" id="yes">Да, завершить</button> <button id="no">Продолжить</button></div></section>
+<section id="result" hidden aria-live="polite"><h2 id="score"></h2><p id="student"></p><p id="reason"></p><h3>Разбор ошибок</h3><p id="perfect" hidden>В выбранных ответах ошибок нет.</p><ol id="errors"></ol></section>
+<noscript>Для прохождения теста включите JavaScript.</noscript>
+</main><script>
+const bank=[
+ ['A','Как найти площадь боковой поверхности правильной пирамиды? P — периметр основания, ℓ — апофема.',['Pℓ/2','Pℓ','P²/2','Pℓ/3'],'У всех боковых треугольников высота ℓ. Сумма их оснований равна P, поэтому Sбок = Pℓ/2.'],
+ ['A','Как найти площадь полной поверхности пирамиды?',['Sбок + Sосн','Sбок + 2Sосн','Sбок − Sосн','Sбок × Sосн'],'К площади боковых граней прибавляем площадь единственного основания: Sполн = Sбок + Sосн.'],
+ ['A','Как найти площадь боковой поверхности правильной усечённой пирамиды? P₁ и P₂ — периметры оснований, ℓ — апофема.',['(P₁ + P₂)ℓ/2','(P₁ − P₂)ℓ/2','(P₁ + P₂)ℓ','P₁ℓ/2'],'У всех боковых трапеций высота ℓ. Сумма их параллельных сторон равна P₁ + P₂, поэтому Sбок = (P₁ + P₂)ℓ/2.'],
+ ['A','Как найти площадь полной поверхности усечённой пирамиды?',['Sбок + S₁ + S₂','Sбок + S₁','Sбок + (S₁ + S₂)/2','Sбок + S₁ − S₂'],'Прибавляем площади обоих оснований к площади боковой поверхности: Sполн = Sбок + S₁ + S₂.'],
+ ['B','Сторона основания правильной четырёхугольной пирамиды 6 см, апофема 5 см. Найдите площадь полной поверхности.',['96 см²','60 см²','120 см²','132 см²'],'4 · 6 · 5 / 2 + 6² = 96 см².'],
+ ['B','Сторона основания правильной треугольной пирамиды 8 см, апофема 7 см. Найдите площадь боковой поверхности.',['84 см²','168 см²','56 см²','112 см²'],'3 · 8 · 7 / 2 = 84 см².'],
+ ['B','Стороны квадратных оснований правильной усечённой пирамиды 10 и 4 см, апофема 5 см. Найдите площадь полной поверхности.',['256 см²','240 см²','140 см²','280 см²'],'(40 + 16) · 5 / 2 + 10² + 4² = 256 см².'],
+ ['B','Периметры оснований правильной усечённой пирамиды 36 и 20 см. Площадь боковой поверхности 168 см². Найдите апофему.',['6 см','3 см','12 см','21 см'],'ℓ = 2 · 168 / (36 + 20) = 6 см.'],
+ ['C','Высота правильной четырёхугольной пирамиды 12 см, сторона основания 10 см. Найдите площадь полной поверхности.',['360 см²','340 см²','260 см²','620 см²'],'Апофема √(12² + 5²) = 13 см. Площадь полной поверхности 40 · 13 / 2 + 100 = 360 см².'],
+ ['C','Высота правильной усечённой пирамиды 4 см, стороны квадратных оснований 14 и 8 см. Найдите площадь полной поверхности.',['480 см²','436 см²','220 см²','700 см²'],'Апофема √(4² + ((14 − 8)/2)²) = 5 см. Площадь полной поверхности (56 + 32) · 5 / 2 + 196 + 64 = 480 см².']
+];
+const $=id=>document.getElementById(id), key='piramidy-surface-10-v1';
+let state=null;
+function read(){return JSON.parse(localStorage.getItem(key)||'null');}
+function save(){localStorage.setItem(key,JSON.stringify(state));}
+function finish(reason){if(!state||state.reason)return;state.reason=reason;save();show();}
+function tick(){
+ if(!state||state.reason)return;
+ const s=Math.max(0,Math.ceil((state.deadline-Date.now())/1000));
+ $('clock').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+ if(!s)finish('Время истекло.');
+}
+function show(){
+ $('intro').hidden=Boolean(state);$('quiz').hidden=!state||Boolean(state.reason);$('result').hidden=!state||!state.reason;
+ $('notice').textContent=state&&!state.reason&&state.hides===1?'Предупреждение. Следующее скрытие вкладки завершит тест.':'';
+ if(!state)return;
+ if(!state.reason){render();tick();return;}
+ const wrong=bank.map((_,i)=>i).filter(i=>state.answers[i]!==null&&state.answers[i]!==0);
+ const points=state.answers.filter(answer=>answer===0).length, percent=points*10, grade=percent<40?2:percent<65?3:percent<86?4:5;
+ $('score').textContent=points+' / 10 · '+percent+'% · Оценка «'+grade+'»';
+ $('student').textContent=state.student.join(' · ');
+ $('reason').textContent=state.reason+' Пропущено заданий: '+state.answers.filter(answer=>answer===null).length+'.';
+ $('perfect').hidden=wrong.length>0;
+ $('errors').replaceChildren(...wrong.map(i=>{
+  const li=document.createElement('li');li.value=i+1;
+  const [,question,options,explanation]=bank[i], selected=state.answers[i];
+  for(const line of [question,'Ваш ответ — '+options[selected],'Решение. '+explanation]){
+   const p=document.createElement('p');p.textContent=line;li.append(p);
+  }
+  return li;
+ }));
+}
+function go(i){tick();if(state.reason)return;state.index=i;$('confirm').hidden=true;save();render();}
+function render(){
+ const i=state.index,[level,question,options]=bank[i];
+ $('level').textContent='Уровень '+level;$('question').textContent=question;
+ $('progress').textContent='Задание '+(i+1)+' из 10 · Ответов '+state.answers.filter(x=>x!==null).length;
+ $('options').replaceChildren(...state.order[i].map((j,position)=>{
+  const b=document.createElement('button');b.textContent=options[j];
+  b.setAttribute('aria-pressed',String(state.answers[i]===j));
+  b.onclick=()=>{tick();if(state.reason)return;state.answers[i]=j;save();render();$('options').children[position].focus();};
+  return b;
+ }));
+ $('map').replaceChildren(...bank.map((_,j)=>{
+  const b=document.createElement('button');b.textContent=j+1;b.classList.toggle('done',state.answers[j]!==null);
+  if(i===j)b.setAttribute('aria-current','step');b.onclick=()=>go(j);return b;
+ }));
+ $('prev').disabled=i===0;$('next').disabled=i===9;
+}
+$('form').onsubmit=e=>{
+ e.preventDefault();
+ const student=['surname','given','className'].map(id=>$(id).value.trim());
+ if(student.some(v=>!v)){$('notice').textContent='Заполните фамилию, имя и класс.';return;}
+ try{
+  const previous=read();if(previous){state=previous;show();return;}
+  const order=bank.map(()=>{
+   const a=[0,1,2,3];
+   for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+   return a;
+  });
+  state={student,order,answers:Array(10).fill(null),index:0,deadline:Date.now()+600000,hides:0,reason:''};
+  save();show();
+ }catch{$('notice').textContent='Для запуска разрешите локальное хранение данных в браузере.';}
+};
+$('prev').onclick=()=>go(state.index-1);$('next').onclick=()=>go(state.index+1);
+$('finish').onclick=()=>{$('confirm').hidden=false;};$('no').onclick=()=>{$('confirm').hidden=true;};
+$('yes').onclick=()=>{tick();finish('Тест завершён.');};
+document.addEventListener('visibilitychange',()=>{
+ tick();
+ if(!state||state.reason||!document.hidden)return;
+ state.hides++;
+ if(state.hides>=2)finish('Тест завершён после второго скрытия вкладки.');
+ else{save();$('notice').textContent='Предупреждение. Следующее скрытие вкладки завершит тест.';}
+});
+window.addEventListener('storage',e=>{if(e.key===key&&e.newValue){state=JSON.parse(e.newValue);show();}});
+try{state=read();show();}catch{$('notice').textContent='Откройте тест в обычной вкладке браузера с доступом к локальному хранению.';}
+setInterval(tick,250);
+</script></body></html>
