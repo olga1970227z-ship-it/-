@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Математическая грамотность · 10–11 классы</title>
+<style>
+:root {
+  color-scheme: light;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #182d32; background: #eef4f2; line-height: 1.55;
+  --accent: #0b6556; --muted: #476059; --border: #cddbd6; --white: #fff;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { width: min(100% - 28px, 760px); margin-inline: auto; padding-block: 30px 48px; }
+header { background: #133d38; color: white; border-radius: 24px; padding: clamp(22px, 6vw, 44px); }
+header p { color: #bce4d9; margin: 0 0 8px; font-weight: 650; }
+h1, h2, h3 { line-height: 1.16; overflow-wrap: anywhere; }
+h1 { font-size: clamp(1.9rem, 6vw, 3.1rem); margin: 0; letter-spacing: -.035em; }
+h2 { margin: 0 0 16px; font-size: clamp(1.45rem, 5vw, 2rem); }
+h3 { margin: 0 0 12px; font-size: 1.15rem; }
+.panel { margin-top: 16px; padding: clamp(16px, 4vw, 28px); border: 1px solid var(--border); border-radius: 20px; background: var(--white); }
+form { margin: 0; }
+label { font-weight: 650; }
+input:not([type=radio]) { display: block; width: min(100%, 370px); min-height: 48px; margin: 5px 0 14px; padding: 10px 12px; color: inherit; background: white; border: 1px solid #8ba39b; border-radius: 10px; font: inherit; font-size: 1rem; }
+button { border-radius: 12px; border: 1px solid transparent; background: var(--accent); color: white; font: inherit; font-weight: 700; cursor: pointer; padding: 10px 16px; min-height: 46px; }
+button.secondary { background: #eef5f2; color: #15453a; border-color: #b9d1c9; }
+button:disabled { opacity: .65; cursor: default; }
+:focus-visible { outline: 3px solid #006c9e; outline-offset: 3px; }
+ul, ol { padding-inline-start: 23px; }
+li + li { margin-top: 5px; }
+[hidden] { display: none !important; }
+.toolbar { position: sticky; top: 0; z-index: 2; padding-top: 8px; background: #eef4f2; }
+.monitor { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; padding: 10px 16px; border: 1px solid var(--border); border-radius: 14px; background: white; color: var(--muted); }
+.monitor strong { display: block; color: #133d38; font-size: 1.2rem; font-variant-numeric: tabular-nums; }
+progress { grid-column: 1/-1; width: 100%; height: 9px; accent-color: var(--accent); }
+.urgent { color: #a52817 !important; }
+.notice { border: 1px solid #e4c477; color: #5c420a; background: #fff5db; padding: 10px 12px; border-radius: 12px; margin: 8px 0 0; }
+.error { color: #991f16; font-weight: 650; }
+.question { margin: 14px 0; scroll-margin-top: 104px; }
+.question p, .review-item p { margin: 0 0 12px; }
+#question-list, #question-list * { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+fieldset { border: 0; min-width: 0; margin: 0; padding: 0; }
+legend { padding: 0; margin-bottom: 6px; color: var(--muted); font-size: .92rem; }
+.option { display: flex; align-items: center; gap: 10px; min-height: 49px; margin: 7px 0 0; border: 1px solid var(--border); border-radius: 11px; padding: 8px 12px; cursor: pointer; font-weight: 550; overflow-wrap: anywhere; }
+.option:has(input:checked) { background: #e5f4ee; border-color: var(--accent); }
+.option:focus-within { outline: 2px solid #006c9e; outline-offset: 2px; }
+input[type=radio] { flex: 0 0 auto; margin: 0; width: 19px; height: 19px; accent-color: var(--accent); }
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: .94rem; }
+th, td { padding: 7px; border-bottom: 1px solid var(--border); text-align: left; }
+th { background: #eef5f2; }
+.score-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin: 0 0 20px; }
+#result-away-warning { margin: 0 0 12px; }
+.score-grid div { background: #eef5f2; padding: 10px 12px; border-radius: 12px; }
+.score-grid div:first-child { grid-column: 1/-1; }
+dt { color: var(--muted); font-size: .9rem; }
+dd { margin: 0; font-weight: 750; font-size: 1.15rem; overflow-wrap: anywhere; }
+#code-form, #review { margin-top: 18px; }
+.review-item { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 16px; }
+.review-item ol { margin-bottom: 0; }
+dialog { width: min(100% - 30px, 420px); padding: 24px; border: 1px solid var(--border); border-radius: 18px; color: inherit; }
+dialog::backdrop { background: #102a28a0; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 480px) {
+  main { padding-top: 14px; }
+  .monitor { background: white; }
+  #start-form button, #finish { width: 100%; }
+  th, td { padding: 5px; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header><p>10–11 классы</p><h1>Математическая грамотность</h1></header>
+  <p id="storage-error" class="notice" role="alert" hidden></p>
+  <section class="panel" id="intro" aria-labelledby="rules-title">
+    <h2 id="rules-title">Правила теста</h2>
+    <ul>
+      <li>10 заданий за 10 минут. В каждом задании выберите один из четырёх ответов.</li>
+      <li>Верный ответ даёт 1 балл. Ошибочный или пропущенный ответ даёт 0 баллов.</li>
+      <li>По истечении времени тест завершится автоматически. Ответы сохраняются в этом браузере.</li>
+      <li>Переходы с вкладки фиксируются. После завершения повторная попытка в этом браузере заблокирована.</li>
+    </ul>
+    <form id="start-form">
+      <label for="surname">Фамилия ученика</label>
+      <input id="surname" type="text" autocomplete="family-name" maxlength="100" required>
+      <button id="start" type="submit">Начать тест</button>
+    </form>
+  </section>
+  <section id="test" aria-label="Задания теста" hidden>
+    <div class="toolbar">
+      <div class="monitor">
+        <div>Осталось<strong id="clock" role="timer">10:00</strong></div>
+        <div>Выполнено<strong id="answered" aria-live="polite">0 из 10</strong></div>
+        <progress id="progress" max="10" value="0" aria-label="Выполнено заданий"></progress>
+      </div>
+      <p id="away-warning" class="notice" role="status" hidden></p>
+    </div>
+    <div id="question-list"></div>
+    <button id="finish" type="button">Завершить тест</button>
+  </section>
+  <section class="panel" id="result" aria-labelledby="result-title" hidden>
+    <h2 id="result-title" tabindex="-1">Результат</h2>
+    <p id="result-away-warning" class="notice" role="status" hidden></p>
+    <dl id="metrics" class="score-grid"></dl>
+    <button id="open-review" class="secondary" type="button" aria-controls="code-form" aria-expanded="false">Открыть разбор ошибок</button>
+    <form id="code-form" hidden>
+      <label for="teacher-code">Введите код учителя</label>
+      <input id="teacher-code" type="password" inputmode="numeric" autocomplete="off" required>
+      <button type="submit">Открыть разбор</button>
+      <p class="error" id="code-error" role="alert" hidden>Неверный код</p>
+    </form>
+    <section id="review" aria-labelledby="review-title" hidden>
+      <h3 id="review-title" tabindex="-1">Разбор ошибок</h3>
+      <div id="review-content"></div>
+    </section>
+  </section>
+</main>
+<dialog id="confirm" aria-labelledby="confirm-title">
+  <h2 id="confirm-title">Завершить тест?</h2>
+  <p id="confirm-text"></p>
+  <form method="dialog" class="actions">
+    <button class="secondary" value="continue" autofocus>Продолжить тест</button>
+    <button value="finish">Завершить</button>
+  </form>
+</dialog>
+<noscript>Для прохождения теста включите JavaScript в браузере.</noscript>
+<script>
+"use strict";
+
+const questions = [
+  {
+    id: "median-mode", title: "Время в пути",
+    prompt: "Время поездок до школы за семь дней составило 21, 28, 24, 19, 24, 25 и 31 минуту. Чему равны медиана и мода соответственно?",
+    options: ["24 мин и 24 мин", "25 мин и 24 мин", "24 мин и 25 мин", "24 мин и 28 мин"], correct: 0,
+    steps: ["Упорядочим значения: 19, 21, 24, 24, 25, 28, 31.", "Медиана семи значений — четвёртое число ряда, то есть 24 мин.", "Число 24 встречается дважды, остальные — по одному разу. Поэтому мода тоже равна 24 мин."]
+  },
+  {
+    id: "tariff", title: "Тариф доставки",
+    prompt: "Курьерская служба рассчитывает стоимость доставки как сумму фиксированной платы и платы за каждый килограмм. Сколько будет стоить отправка посылки массой 4 кг по самому выгодному тарифу?",
+    table: {caption: "Тарифы доставки", columns: ["Тариф", "Плата, ₸", "За 1 кг, ₸"], rows: [["А", "850", "280"], ["Б", "1 200", "180"], ["В", "600", "360"]]},
+    options: ["1 970 ₸", "1 920 ₸", "2 040 ₸", "1 800 ₸"], correct: 1,
+    steps: ["Тариф А: 850 + 280 × 4 = 1 970 ₸.", "Тариф Б: 1 200 + 180 × 4 = 1 920 ₸.", "Тариф В: 600 + 360 × 4 = 2 040 ₸.", "Наименьшая из трёх стоимостей — 1 920 ₸."]
+  },
+  {
+    id: "mean", title: "Покупки в магазине",
+    prompt: "Четыре товара стоят 1 250, 1 450, 1 900 и 2 600 тенге. Какова средняя цена одного товара?",
+    options: ["1 750 ₸", "1 675 ₸", "1 800 ₸", "1 900 ₸"], correct: 2,
+    steps: ["Сложим цены: 1 250 + 1 450 + 1 900 + 2 600 = 7 200 ₸.", "Разделим сумму на количество товаров: 7 200 ÷ 4 = 1 800 ₸."]
+  },
+  {
+    id: "volume", title: "Смесь для стяжки",
+    prompt: "В комнате размером 6 м × 4 м делают бетонную стяжку толщиной 8 см. На 1 м³ готового бетона требуется 1 250 кг сухой смеси. Сколько сухой смеси нужно без учёта потерь?",
+    options: ["1 920 кг", "2 500 кг", "24 000 кг", "2 400 кг"], correct: 3,
+    steps: ["Переведём толщину в метры: 8 см = 0,08 м.", "Найдём объём стяжки: V = 6 × 4 × 0,08 = 1,92 м³.", "Умножим объём на расход смеси: 1,92 × 1 250 = 2 400 кг."]
+  },
+  {
+    id: "range", title: "Время ожидания",
+    prompt: "В таблице указано время ожидания автобуса в течение пяти дней. Каков размах этих значений?",
+    table: {caption: "Время ожидания по дням", columns: ["День", "Время, мин"], rows: [["Понедельник", "12"], ["Вторник", "21"], ["Среда", "17"], ["Четверг", "28"], ["Пятница", "24"]]},
+    options: ["16 мин", "12 мин", "19 мин", "21 мин"], correct: 0,
+    steps: ["Наименьшее время — 12 минут, наибольшее — 28 минут.", "Размах равен разности наибольшего и наименьшего значений: 28 − 12 = 16 минут."]
+  },
+  {
+    id: "discount", title: "Две скидки",
+    prompt: "Рюкзак стоит 32 000 тенге. В магазине действует скидка 25%, а купон даёт ещё 10% от уже сниженной цены. Сколько будет стоить рюкзак с учётом обеих скидок?",
+    options: ["20 800 ₸", "21 600 ₸", "24 000 ₸", "22 400 ₸"], correct: 1,
+    steps: ["После первой скидки остаётся 75% цены: 32 000 × 0,75 = 24 000 ₸.", "Купон уменьшает уже новую цену на 10%. Остаётся 90% от 24 000 ₸: 24 000 × 0,90 = 21 600 ₸."]
+  },
+  {
+    id: "weighted", title: "Средний результат команды",
+    prompt: "Пять участников команды набрали по 12 баллов, четыре — по 15 баллов, а один — 20 баллов. Сколько баллов в среднем набрал один участник?",
+    options: ["13 баллов", "15 баллов", "14 баллов", "15⅔ балла"], correct: 2,
+    steps: ["Сумма баллов: 5 × 12 + 4 × 15 + 1 × 20 = 60 + 60 + 20 = 140.", "Всего 5 + 4 + 1 = 10 участников.", "Средний результат: 140 ÷ 10 = 14 баллов."]
+  },
+  {
+    id: "paint", title: "Краска для ремонта",
+    prompt: "Нужно покрасить 53 м² стен. Одной банки хватает на 9 м², и она стоит 3 400 тенге. За каждые три оплаченные банки магазин дарит одну. Какую минимальную сумму нужно заплатить?",
+    options: ["13 600 ₸", "20 400 ₸", "10 200 ₸", "17 000 ₸"], correct: 3,
+    steps: ["Пяти банок хватит только на 45 м². Шесть банок покроют 54 м², поэтому нужны шесть.", "Если оплатить четыре банки, с подарком будет пять. Если оплатить пять, с подарком будет шесть.", "Минимальная стоимость: 5 × 3 400 = 17 000 ₸."]
+  },
+  {
+    id: "probability", title: "Проверка велосипедов",
+    prompt: "На станции проката 18 велосипедов. Среди них 6 нуждаются в настройке тормозов, а у остальных тормоза исправны. Из всех велосипедов случайно выбирают один. Какова вероятность, что у него исправны тормоза? Выберите несократимую дробь.",
+    options: ["2/3", "1/3", "1/2", "5/6"], correct: 0,
+    steps: ["Число велосипедов с исправными тормозами: 18 − 6 = 12.", "Вероятность равна числу подходящих исходов, делённому на число всех исходов: 12/18.", "Сократим числитель и знаменатель на 6: 12/18 = 2/3."]
+  },
+  {
+    id: "proportion", title: "Рецепт для школьной ярмарки",
+    prompt: "Чтобы приготовить 16 одинаковых порций печенья, нужно 1,2 кг муки. Сколько муки понадобится для 36 таких же порций?",
+    options: ["2,4 кг", "2,7 кг", "3 кг", "3,6 кг"], correct: 1,
+    steps: ["На одну порцию нужно 1,2 ÷ 16 = 0,075 кг муки.", "На 36 порций нужно 0,075 × 36 = 2,7 кг муки."]
+  }
+];
+
+const byId = new Map(questions.map(question => [question.id, question]));
+const total = questions.length;
+const duration = 10 * 60 * 1000;
+const storageKey = "matgramotnost-10-11-22nov26-v1";
+const teacherCode = "789";
+const $ = id => document.getElementById(id);
+const questionList = $("question-list");
+const dialog = $("confirm");
+let state = null;
+let clockInterval = null;
+
+function element(tag, value) {
+  const node = document.createElement(tag);
+  if (value !== undefined) node.textContent = value;
+  return node;
+}
+
+function storageFailure() {
+  const message = $("storage-error");
+  message.textContent = state?.status === "active"
+    ? "Браузер перестал сохранять изменения. Оставьте эту страницу открытой до завершения теста."
+    : "Браузер не смог сохранить попытку. Разрешите локальное хранение или откройте HTML-файл в другом браузере.";
+  message.hidden = false;
+}
+
+function readState() {
+  const raw = localStorage.getItem(storageKey);
+  return raw ? JSON.parse(raw) : null;
+}
+
+function saveState(next) {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(next));
+    state = next;
+    return true;
+  } catch {
+    if (state) state = next;
+    storageFailure();
+    return false;
+  }
+}
+
+function shuffle(values) {
+  const copy = [...values];
+  for (let end = copy.length - 1; end > 0; end--) {
+    const index = Math.floor(Math.random() * (end + 1));
+    [copy[end], copy[index]] = [copy[index], copy[end]];
+  }
+  return copy;
+}
+
+function addCondition(parent, question) {
+  parent.append(element("p", question.prompt));
+  if (!question.table) return;
+  const table = element("table");
+  const caption = table.createCaption();
+  caption.textContent = question.table.caption;
+  const headingRow = table.createTHead().insertRow();
+  for (const name of question.table.columns) {
+    const heading = element("th", name);
+    heading.scope = "col";
+    headingRow.append(heading);
+  }
+  const body = table.createTBody();
+  for (const values of question.table.rows) {
+    const row = body.insertRow();
+    for (const value of values) row.insertCell().textContent = value;
+  }
+  parent.append(table);
+}
+
+function showTest() {
+  $("intro").hidden = true;
+  $("result").hidden = true;
+  $("test").hidden = false;
+  const fragment = document.createDocumentFragment();
+  state.order.forEach((id, index) => {
+    const question = byId.get(id);
+    const card = element("article");
+    card.className = "panel question";
+    const heading = element("h3", `${index + 1}. ${question.title}`);
+    heading.id = `heading-${id}`;
+    card.setAttribute("aria-labelledby", heading.id);
+    card.append(heading);
+    addCondition(card, question);
+    const options = element("fieldset");
+    options.append(element("legend", "Выберите один ответ"));
+    for (const optionIndex of state.optionOrder[id]) {
+      const label = element("label");
+      label.className = "option";
+      const input = element("input");
+      input.type = "radio";
+      input.name = id;
+      input.value = optionIndex;
+      input.checked = state.answers[id] === optionIndex;
+      label.append(input, element("span", question.options[optionIndex]));
+      options.append(label);
+    }
+    card.append(options);
+    fragment.append(card);
+  });
+  questionList.replaceChildren(fragment);
+  updateProgress();
+  tick();
+  if (state.status === "active") clockInterval = setInterval(tick, 250);
+}
+
+function updateProgress() {
+  const count = Object.keys(state.answers).length;
+  $("answered").textContent = `${count} из ${total}`;
+  $("progress").value = count;
+}
+
+function timeText(seconds) {
+  return `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+}
+
+function tick() {
+  if (state?.status !== "active") return;
+  const remaining = Math.max(0, Math.ceil((state.endsAt - Date.now()) / 1000));
+  $("clock").textContent = timeText(remaining);
+  $("clock").classList.toggle("urgent", remaining <= 60);
+  if (remaining === 0) finishTest(state.endsAt);
+}
+
+function finishTest(now = Date.now()) {
+  if (state?.status !== "active") return;
+  saveState({...state, status: "finished", finishedAt: Math.min(now, state.endsAt)});
+  showResult();
+}
+
+function showResult() {
+  clearInterval(clockInterval);
+  if (dialog.open) dialog.close("expired");
+  $("intro").hidden = true;
+  $("test").hidden = true;
+  questionList.replaceChildren();
+  $("result").hidden = false;
+  const score = questions.filter(q => state.answers[q.id] === q.correct).length;
+  const percent = score * 100 / total;
+  const grade = percent < 40 ? 2 : percent < 65 ? 3 : percent < 86 ? 4 : 5;
+  const seconds = Math.max(0, Math.floor((state.finishedAt - state.startedAt) / 1000));
+  const metrics = [
+    ["Фамилия", state.surname], ["Баллы", `${score} из ${total}`],
+    ["Правильные ответы", `${percent}%`], ["Оценка", `«${grade}»`],
+    ["Затраченное время", timeText(seconds)], ["Переключения вкладки", state.switches]
+  ];
+  $("metrics").replaceChildren(...metrics.map(([label, value]) => {
+    const item = element("div");
+    item.append(element("dt", label), element("dd", value));
+    return item;
+  }));
+  $("result-title").focus();
+  if (!document.hidden) notifyReturn();
+}
+
+function showReview() {
+  const entries = state.order.flatMap((id, index) => {
+    const question = byId.get(id);
+    const answer = state.answers[id];
+    if (answer === question.correct) return [];
+    const item = element("article");
+    item.className = "review-item";
+    item.append(element("h3", `${index + 1}. ${question.title}`));
+    addCondition(item, question);
+    item.append(
+      element("p", `Ответ ученика: ${answer === undefined ? "Задание пропущено" : question.options[answer]}`),
+      element("p", `Правильный ответ: ${question.options[question.correct]}`)
+    );
+    const steps = element("ol");
+    steps.append(...question.steps.map(step => element("li", step)));
+    item.append(steps);
+    return [item];
+  });
+  $("review-content").replaceChildren(...(entries.length ? entries : [element("p", "Все задания выполнены верно!")]));
+  $("code-form").hidden = true;
+  $("open-review").hidden = true;
+  $("review").hidden = false;
+  $("review-title").focus();
+}
+
+function updateVisibility() {
+  if (!state) return;
+  if (state.status === "finished") {
+    if (!document.hidden) notifyReturn();
+    return;
+  }
+  if (document.hidden) {
+    if (!state.away && Date.now() < state.endsAt) {
+      saveState({...state, away: true, switches: state.switches + 1});
+    }
+    tick();
+    return;
+  }
+  tick();
+  notifyReturn();
+}
+
+function notifyReturn() {
+  if (!state.away) return;
+  saveState({...state, away: false});
+  const warning = $(state.status === "finished" ? "result-away-warning" : "away-warning");
+  warning.textContent = `Вы покинули вкладку теста. Зафиксировано переключений: ${state.switches}.`;
+  warning.hidden = false;
+}
+
+$("start-form").addEventListener("submit", event => {
+  event.preventDefault();
+  const surname = $("surname");
+  const name = surname.value.trim();
+  if (!name) {
+    surname.setCustomValidity("Введите фамилию.");
+    surname.reportValidity();
+    return;
+  }
+  try {
+    state = readState();
+  } catch {
+    storageFailure();
+    return;
+  }
+  if (state?.status === "finished") {
+    showResult();
+    return;
+  }
+  if (state?.status === "active") {
+    showTest();
+    updateVisibility();
+    return;
+  }
+  const startedAt = Date.now();
+  const next = {
+    status: "active", surname: name, startedAt, endsAt: startedAt + duration,
+    order: shuffle(questions.map(q => q.id)),
+    optionOrder: Object.fromEntries(questions.map(q => [q.id, shuffle(q.options.map((_, i) => i))])),
+    answers: {}, switches: 0, away: false
+  };
+  if (saveState(next)) {
+    $("storage-error").hidden = true;
+    showTest();
+    questionList.querySelector("input").focus({preventScroll: true});
+  }
+});
+
+$("surname").addEventListener("input", event => event.target.setCustomValidity(""));
+questionList.addEventListener("change", event => {
+  if (state?.status !== "active" || !event.target.matches("input[type=radio]")) return;
+  tick();
+  if (state.status !== "active") return;
+  const {name, value} = event.target;
+  saveState({...state, answers: {...state.answers, [name]: Number(value)}});
+  updateProgress();
+});
+for (const type of ["copy", "cut", "paste", "dragstart"]) {
+  questionList.addEventListener(type, event => event.preventDefault());
+}
+
+document.addEventListener("contextmenu", event => {
+  if (state?.status === "active") event.preventDefault();
+});
+
+$("finish").addEventListener("click", () => {
+  tick();
+  if (state.status !== "active") return;
+  const unanswered = total - Object.keys(state.answers).length;
+  if (!unanswered) {
+    finishTest();
+    return;
+  }
+  $("confirm-text").textContent = `Осталось вопросов без ответа: ${unanswered}. Неотвеченные задания дадут 0 баллов.`;
+  dialog.showModal();
+});
+dialog.addEventListener("close", () => {
+  if (dialog.returnValue === "finish") finishTest();
+});
+dialog.addEventListener("cancel", () => { dialog.returnValue = "continue"; });
+
+$("open-review").addEventListener("click", () => {
+  $("code-form").hidden = false;
+  $("open-review").setAttribute("aria-expanded", "true");
+  $("teacher-code").focus();
+});
+$("teacher-code").addEventListener("input", () => { $("code-error").hidden = true; });
+$("code-form").addEventListener("submit", event => {
+  event.preventDefault();
+  const input = $("teacher-code");
+  if (input.value.trim() !== teacherCode) {
+    $("code-error").hidden = false;
+    input.select();
+    return;
+  }
+  input.value = "";
+  showReview();
+});
+
+document.addEventListener("visibilitychange", updateVisibility);
+window.addEventListener("pageshow", updateVisibility);
+window.addEventListener("storage", event => {
+  if (event.key !== storageKey || !event.newValue) return;
+  const next = JSON.parse(event.newValue);
+  if (state?.status === "finished") return;
+  if (next.status === "finished") {
+    state = next;
+    showResult();
+    return;
+  }
+  const wasActive = state?.status === "active";
+  state = next;
+  if (!wasActive) {
+    showTest();
+  } else {
+    for (const input of questionList.querySelectorAll("input[type=radio]")) {
+      input.checked = state.answers[input.name] === Number(input.value);
+    }
+    updateProgress();
+    tick();
+  }
+});
+
+try {
+  state = readState();
+  if (state?.status === "finished") showResult();
+  else if (state?.status === "active") {
+    showTest();
+    updateVisibility();
+  }
+} catch {
+  storageFailure();
+}
+</script>
+</body>
+</html>
