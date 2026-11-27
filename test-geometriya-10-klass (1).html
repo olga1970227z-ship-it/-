@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Расстояние между прямой и плоскостью · Геометрия, 10 класс</title>
+<style>
+:root{color-scheme:light;--ink:#172b38;--muted:#4a6070;--blue:#10485b;--mint:#dff4eb;--edge:#c5d7db;--paper:#f0f6f6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:1rem/1.55 system-ui,sans-serif}
+.wrap{width:min(100% - 2rem,49rem);margin-inline:auto}
+header{background:#103b4b;color:white;padding:clamp(1.3rem,5vw,3rem) 0}
+header p{margin:0 0 .35rem;color:#bdebd9;font-weight:700}
+h1{margin:0;line-height:1.1;font-size:clamp(1.65rem,5vw,2.8rem);letter-spacing:-.03em}
+h2{margin:0 0 .65rem;font-size:clamp(1.25rem,4vw,1.6rem)}
+h3{margin:0 0 .5rem}
+main{padding-block:1rem 2rem}
+section{padding:clamp(.9rem,4vw,1.7rem);background:white;border:1px solid var(--edge);border-radius:1rem}
+[hidden]{display:none!important}
+ul,ol{padding-inline-start:1.4rem}
+li+li{margin-top:.35rem}
+label{display:block;font-weight:650}
+input,button{font:inherit}
+input[type=text],input[type=password]{display:block;width:min(100%,21rem);padding:.65rem;border:1px solid #718d99;border-radius:.5rem;margin:.25rem 0 .75rem}
+button{padding:.55rem .85rem;border:1px solid var(--blue);border-radius:.55rem;background:white;color:var(--blue);font-weight:700;cursor:pointer;min-height:2.75rem}
+button.primary{background:var(--blue);color:white}
+button:disabled{opacity:.45;cursor:default}
+:focus-visible{outline:3px solid #836300;outline-offset:3px}
+.status{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;padding:.55rem .7rem;background:var(--mint);border-radius:.65rem;margin-bottom:.85rem;font-weight:700}
+#clock{font-variant-numeric:tabular-nums}
+.urgent,.error{color:#8b2a21}
+.notice{background:#fff3d6;border:1px solid #ddbd6b;padding:.6rem .75rem;border-radius:.5rem}
+nav{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:.3rem;margin-bottom:1rem}
+nav button{padding:.35rem 0}
+nav .answered{background:var(--mint)}
+nav [aria-current=true]{background:var(--blue);color:white}
+#test{user-select:none;-webkit-user-select:none}
+fieldset{padding:0;border:0;margin:0;min-width:0}
+legend{font-size:1.08rem;margin-bottom:.75rem;padding:0}
+.choice{display:flex;align-items:center;gap:.75rem;border:1px solid var(--edge);border-radius:.65rem;padding:.55rem .75rem;margin-bottom:.45rem;min-height:2.85rem;cursor:pointer}
+.choice:has(:checked){background:var(--mint);border-color:#407b6a}
+.choice input{accent-color:var(--blue);width:1.15rem;height:1.15rem;margin:0;flex:none}
+.actions{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.8rem}
+.actions .primary{margin-inline-start:auto}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,9rem),1fr));gap:.5rem;margin:1rem 0}
+.metrics div{background:var(--mint);border-radius:.55rem;padding:.5rem .65rem}
+dt{color:var(--muted);font-size:.9rem}
+dd{font-size:1.25rem;font-weight:750;margin:0}
+.review-item{padding:.9rem 0;border-top:1px solid var(--edge)}
+.review-item p{margin:.3rem 0}
+#code-form,#review{margin-top:1rem}
+dialog{width:min(100% - 2rem,29rem);border:1px solid var(--edge);border-radius:.8rem;color:var(--ink)}
+dialog::backdrop{background:#152b3a90}
+.math{white-space:nowrap}
+@media(max-width:540px){nav{grid-template-columns:repeat(5,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><p>Геометрия · 10 класс</p><h1>Расстояние между прямой и плоскостью</h1></div></header>
+<main class="wrap">
+<p class="notice" id="storage-error" role="alert" hidden>Браузер не может сохранить попытку. Откройте файл в обычном окне браузера с доступным локальным хранилищем.</p>
+<section id="start" aria-labelledby="rules">
+<h2 id="rules">Правила теста</h2>
+<ul>
+<li>10 заданий, 30 минут. В каждом задании один правильный ответ стоимостью 1 балл. Максимум — 10 баллов.</li>
+<li>Можно возвращаться к заданиям и менять ответы до завершения. Пропуски оцениваются в 0 баллов.</li>
+<li>Ответы сохраняются в браузере. При обновлении страницы и сворачивании таймер продолжает идти.</li>
+<li>Уход со вкладки фиксируется. По истечении времени тест завершается автоматически. В этом браузере доступна одна попытка.</li>
+</ul>
+<form id="start-form">
+<label for="surname">Фамилия</label>
+<input id="surname" type="text" autocomplete="family-name" maxlength="80" required>
+<button id="begin" class="primary" type="submit">Начать тест</button>
+</form>
+</section>
+<section id="test" aria-label="Задания теста" hidden>
+<div class="status"><span>Осталось <strong id="clock" role="timer">30:00</strong></span><span id="progress"></span></div>
+<p class="notice" id="warning" role="status" hidden></p>
+<nav id="nav" aria-label="Номера заданий"></nav>
+<h2 id="question-heading" tabindex="-1"></h2>
+<fieldset><legend id="condition"></legend><div id="choices"></div></fieldset>
+<div class="actions">
+<button id="prev" type="button">Назад</button><button id="next" type="button">Далее</button>
+<button id="finish" type="button" class="primary">Завершить тест</button>
+</div>
+</section>
+<dialog id="confirm-finish" aria-labelledby="confirm-title">
+<h2 id="confirm-title">Завершить тест?</h2><p id="unanswered"></p>
+<form method="dialog" class="actions">
+<button value="continue" autofocus>Продолжить тест</button>
+<button value="finish" class="primary">Завершить тест</button>
+</form>
+</dialog>
+<section id="result" aria-labelledby="result-heading" hidden>
+<h2 id="result-heading" tabindex="-1">Результат</h2>
+<p id="student"></p><p id="finish-message"></p>
+<dl class="metrics">
+<div><dt>Баллы</dt><dd id="score"></dd></div>
+<div><dt>Правильных ответов</dt><dd id="percentage"></dd></div>
+<div><dt>Оценка</dt><dd id="grade"></dd></div>
+<div><dt>Затраченное время</dt><dd id="elapsed"></dd></div>
+<div><dt>Переключения вкладки</dt><dd id="switches"></dd></div>
+</dl>
+<button id="open-review" type="button" aria-expanded="false" aria-controls="code-form">Открыть разбор ошибок</button>
+<form id="code-form" hidden>
+<label for="code">Введите код учителя</label>
+<input id="code" type="password" inputmode="numeric" autocomplete="off" required>
+<p id="code-error" class="error" role="alert" hidden>Неверный код</p>
+<button class="primary" type="submit">Проверить код</button>
+</form>
+<div id="review" hidden></div>
+</section>
+</main>
+<script>
+'use strict';
+const questions = [
+  {
+    text:'Прямая <i>a</i> параллельна плоскости α. Точка M лежит на прямой <i>a</i>, и расстояние от M до α равно 7 см. Найдите расстояние от любой другой точки N этой прямой до α.',
+    options:['7 см','3,5 см','14 см','0 см'],
+    steps:['Расстояние от точки до плоскости измеряется по перпендикуляру.',
+      'Все точки прямой, параллельной плоскости, равноудалены от неё. Значит, расстояние от N до α равно 7 см.']
+  },
+  {
+    text:'Прямая <i>a</i> параллельна плоскости α. Из точки A прямой <i>a</i> опущен перпендикуляр AB к α и проведена наклонная AC. Найдите расстояние от <i>a</i> до α, если AC = 17 см и проекция BC = 8 см.',
+    options:['15 см','9 см','√353 см','8 см'],
+    steps:['AB ⟂ α, поэтому AB ⟂ BC и треугольник ABC прямоугольный с гипотенузой AC.',
+      'По теореме Пифагора AB = √(17² − 8²) = √225 = 15 см. Это расстояние от прямой <i>a</i> до α.']
+  },
+  {
+    text:'Отрезок CD параллелен плоскости β. Из точки C опущен перпендикуляр CH к β. Его длина 9 см, а длина CD — 16 см. Чему равно расстояние от прямой CD до β?',
+    options:['9 см','16 см','7 см','25 см'],
+    steps:['Прямая CD параллельна β. Для нахождения расстояния достаточно взять любую её точку.',
+      'Для точки C длина перпендикуляра CH равна 9 см. Это и есть искомое расстояние.']
+  },
+  {
+    text:'В прямоугольном параллелепипеде ABCDA₁B₁C₁D₁ рёбра основания AB = 5 см и AD = 12 см, а AA₁ = 8 см. Найдите расстояние между прямой A₁B₁ и плоскостью ABC.',
+    options:['8 см','5 см','12 см','13 см'],
+    steps:['Прямая A₁B₁ лежит в верхней грани, параллельной плоскости основания ABC.',
+      'Ребро A₁A перпендикулярно плоскости ABC. Его длина равна 8 см.']
+  },
+  {
+    text:'Прямая <i>m</i> параллельна плоскости γ. Из точки K на <i>m</i> опущен перпендикуляр KP к γ и проведена наклонная KT длиной 18 см. Угол между KT и γ равен 30°. Найдите расстояние от <i>m</i> до γ.',
+    options:['9 см','9√3 см','18 см','6 см'],
+    steps:['PT — проекция наклонной KT. Поэтому ∠KTP = 30°, а ∠KPT = 90°.',
+      'KP — катет напротив угла 30°. Тогда KP = KT · sin 30° = 18 · ½ = 9 см.']
+  },
+  {
+    text:'Ребро куба ABCDA₁B₁C₁D₁ равно 7 см. Найдите расстояние между прямой A₁C₁ и плоскостью ABCD.',
+    options:['7 см','7√2 см','7√3 см','14 см'],
+    steps:['Диагональ A₁C₁ лежит в верхней грани куба, параллельной нижней грани ABCD.',
+      'Перпендикуляр из A₁ к плоскости ABCD — ребро A₁A. Значит, расстояние равно 7 см.']
+  },
+  {
+    text:'В правильной треугольной призме ABCA₁B₁C₁ ребро основания равно 10 см, а боковое ребро равно 6 см. Найдите расстояние между прямой B₁C₁ и плоскостью ABC.',
+    options:['6 см','10 см','5√3 см','8 см'],
+    steps:['Верхнее основание, содержащее B₁C₁, параллельно плоскости ABC.',
+      'В правильной призме боковое ребро B₁B перпендикулярно основанию. Следовательно, расстояние равно B₁B = 6 см.']
+  },
+  {
+    text:'Расстояние от прямой <i>a</i> до параллельной ей плоскости α равно 8 см. Из точки A прямой <i>a</i> проведены перпендикуляр AH и наклонная AB к α. Угол между AB и AH равен 60°. Найдите длины наклонной AB и её проекции HB в указанном порядке.',
+    options:['16 см и 8√3 см','8√3 см и 16 см','16 см и 8 см','8 см и 4√3 см'],
+    steps:['AH = 8 см, а треугольник AHB прямоугольный. Для угла при A имеем cos 60° = AH / AB.',
+      'AB = 8 / ½ = 16 см.',
+      'HB = AB · sin 60° = 16 · √3/2 = 8√3 см.']
+  },
+  {
+    text:'У прямоугольного параллелепипеда ABCDA₁B₁C₁D₁ стороны основания равны 9 см и 12 см, боковое ребро равно 20 см. Найдите расстояние между прямой BD и плоскостью A₁B₁C₁D₁.',
+    options:['20 см','15 см','25 см','12 см'],
+    steps:['Прямая BD лежит в нижней грани, параллельной плоскости A₁B₁C₁D₁.',
+      'Из точки B к верхней грани проведём перпендикуляр BB₁. Его длина равна боковому ребру, то есть 20 см.']
+  },
+  {
+    text:'Плоскость α перпендикулярна плоскости треугольника ABC и пересекает её по прямой MK, где M ∈ AB, K ∈ BC и MK ∥ AC. Известно, что BM : MA = 3 : 2. Высота треугольника из B к AC равна 20 см. Найдите расстояние от прямой AC до α.',
+    options:['8 см','12 см','20 см','5 см'],
+    steps:['Из MK ∥ AC следует подобие треугольников BMK и BAC. Коэффициент подобия BM / BA = 3/5.',
+      'Высота из B к прямой MK равна 20 · 3/5 = 12 см. Расстояние между параллельными прямыми MK и AC равно 20 − 12 = 8 см.',
+      'В плоскости ABC перпендикуляр к линии пересечения MK перпендикулярен и плоскости α, так как плоскости перпендикулярны. Поэтому расстояние от AC до α равно 8 см.']
+  },
+];
+// Stable IDs keep choices and grading aligned after shuffling.
+const key = 'geometriya-10-rasstoyanie-pryamaya-ploskost-2026-11-26-v1';
+const duration = 30 * 60 * 1000;
+const teacherCode = '910';
+const el = id => document.getElementById(id);
+const ids = questions.map((_, i) => i);
+let state = null;
+let timer;
+let storageFailed = false;
+function shuffle(items) {
+  const order = [...items];
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return order;
+}
+function storageError() {
+  storageFailed = true;
+  clearInterval(timer);
+  el('storage-error').hidden = false;
+  el('begin').disabled = true;
+  el('test').hidden = true;
+  if (el('confirm-finish').open) el('confirm-finish').close();
+}
+function load() {
+  const raw = localStorage.getItem(key);
+  return raw === null ? null : JSON.parse(raw);
+}
+function save() {
+  try {
+    localStorage.setItem(key, JSON.stringify(state));
+    return true;
+  } catch {
+    storageError();
+    return false;
+  }
+}
+function active() {
+  if (storageFailed) return false;
+  try { state = load(); } catch { storageError(); return false; }
+  if (!state) return false;
+  if (state.endedAt !== null) {
+    if (el('result').hidden) showResult(false);
+    return false;
+  }
+  if (Date.now() >= state.deadline) {
+    complete('time');
+    return false;
+  }
+  return true;
+}
+function formatTime(seconds) {
+  return String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
+}
+function tick() {
+  if (!active()) return;
+  const seconds = Math.max(0, Math.ceil((state.deadline - Date.now()) / 1000));
+  el('clock').textContent = formatTime(seconds);
+  el('clock').classList.toggle('urgent', seconds <= 60);
+}
+function answeredCount() {
+  return state.answers.filter(answer => answer !== null).length;
+}
+function renderNav() {
+  el('progress').textContent = 'Выполнено ' + answeredCount() + ' из ' + questions.length;
+  el('nav').replaceChildren(...state.order.map((id, index) => {
+    const button = document.createElement('button');
+    const answered = state.answers[id] !== null;
+    button.type = 'button';
+    button.textContent = index + 1;
+    button.setAttribute('aria-label', 'Задание ' + (index + 1) + (answered ? ', есть ответ' : ''));
+    button.setAttribute('aria-current', String(index === state.index));
+    button.classList.toggle('answered', answered);
+    button.onclick = () => go(index);
+    return button;
+  }));
+}
+function renderQuestion(focus) {
+  const id = state.order[state.index];
+  const question = questions[id];
+  el('question-heading').textContent = 'Задание ' + (state.index + 1) + ' из ' + questions.length;
+  el('condition').innerHTML = question.text;
+  el('choices').replaceChildren(...state.options[id].map(option => {
+    const label = document.createElement('label');
+    label.className = 'choice';
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'answer';
+    input.checked = state.answers[id] === option;
+    input.onchange = () => {
+      if (!active()) return;
+      state.answers[id] = option;
+      if (save()) renderNav();
+    };
+    label.append(input, document.createTextNode(question.options[option]));
+    return label;
+  }));
+  el('prev').disabled = state.index === 0;
+  el('next').disabled = state.index === questions.length - 1;
+  renderNav();
+  if (focus) el('question-heading').focus();
+}
+function go(index) {
+  if (!active() || index < 0 || index >= questions.length) return;
+  state.index = index;
+  if (save()) renderQuestion(true);
+}
+function showTest(focus) {
+  el('start').hidden = true;
+  el('test').hidden = false;
+  renderQuestion(focus);
+  visibilityChanged();
+  clearInterval(timer);
+  if (!el('test').hidden) timer = setInterval(tick, 250);
+}
+function complete(reason) {
+  state.endedAt = reason === 'time' ? state.deadline : Math.min(Date.now(), state.deadline);
+  state.reason = reason;
+  if (save()) showResult(true);
+}
+function showResult(focus) {
+  clearInterval(timer);
+  el('start').hidden = true;
+  el('test').hidden = true;
+  if (el('confirm-finish').open) el('confirm-finish').close();
+  const score = state.answers.filter(answer => answer === 0).length;
+  const percentage = score * 100 / questions.length;
+  const grade = percentage >= 86 ? 5 : percentage >= 65 ? 4 : percentage >= 40 ? 3 : 2;
+  el('student').textContent = 'Фамилия: ' + state.surname;
+  el('finish-message').textContent = state.reason === 'time' ? 'Время истекло. Ответы сохранены.' : 'Тест завершён.';
+  el('score').textContent = score + ' из ' + questions.length;
+  el('percentage').textContent = percentage + '%';
+  el('grade').textContent = '«' + grade + '»';
+  el('elapsed').textContent = formatTime(Math.ceil(Math.max(0, state.endedAt - state.startedAt) / 1000));
+  el('switches').textContent = state.switches;
+  el('result').hidden = false;
+  if (focus) el('result-heading').focus();
+}
+function visibilityChanged() {
+  if (el('test').hidden || !active()) return;
+  if (document.hidden) {
+    if (state.away) return;
+    state.away = true;
+    state.switches++;
+    save();
+    return;
+  }
+  if (state.away) {
+    state.away = false;
+    if (!save()) return;
+    el('warning').textContent = 'Зафиксирован уход со вкладки. Всего переключений: ' + state.switches + '.';
+    el('warning').hidden = false;
+  }
+  tick();
+}
+function showReview() {
+  const review = el('review');
+  const missed = state.order.flatMap((id, index) => {
+    const answer = state.answers[id];
+    if (answer === 0) return [];
+    const question = questions[id];
+    const item = document.createElement('article');
+    item.className = 'review-item';
+    item.innerHTML = '<h3>Задание ' + (index + 1) + '</h3><p>' + question.text + '</p>' +
+      '<p><strong>Ответ ученика:</strong> ' + (answer === null ? 'нет ответа' : question.options[answer]) + '</p>' +
+      '<p><strong>Правильный ответ:</strong> ' + question.options[0] + '</p>' +
+      '<ol>' + question.steps.map(step => '<li>' + step + '</li>').join('') + '</ol>';
+    return [item];
+  });
+  review.replaceChildren(...missed);
+  if (missed.length === 0) review.textContent = 'Все задания выполнены верно!';
+  el('code-form').reset();
+  el('code-form').hidden = true;
+  el('open-review').hidden = true;
+  review.hidden = false;
+  review.tabIndex = -1;
+  review.focus();
+}
+el('start-form').onsubmit = event => {
+  event.preventDefault();
+  const field = el('surname');
+  const surname = field.value.trim();
+  if (!surname) {
+    field.setCustomValidity('Введите фамилию.');
+    field.reportValidity();
+    return;
+  }
+  try { state = load(); } catch { storageError(); return; }
+  if (state) {
+    if (active()) showTest(true);
+    return;
+  }
+  const startedAt = Date.now();
+  state = {
+    surname, startedAt, deadline: startedAt + duration, endedAt: null,
+    order: shuffle(ids), options: questions.map(q => shuffle(q.options.map((_, i) => i))),
+    answers: questions.map(() => null), index: 0, switches: 0, away: false
+  };
+  if (save()) showTest(true);
+};
+el('surname').oninput = () => el('surname').setCustomValidity('');
+el('prev').onclick = () => go(state.index - 1);
+el('next').onclick = () => go(state.index + 1);
+el('finish').onclick = () => {
+  if (!active()) return;
+  const remaining = questions.length - answeredCount();
+  if (!remaining) {
+    complete('manual');
+    return;
+  }
+  el('unanswered').textContent = 'Заданий без ответа: ' + remaining + '. Они будут оценены в 0 баллов.';
+  el('confirm-finish').returnValue = '';
+  el('confirm-finish').showModal();
+};
+el('confirm-finish').addEventListener('close', () => {
+  if (el('confirm-finish').returnValue === 'finish' && active()) complete('manual');
+});
+el('open-review').onclick = () => {
+  el('code-form').hidden = false;
+  el('open-review').setAttribute('aria-expanded', 'true');
+  el('code').focus();
+};
+el('code').oninput = () => { el('code-error').hidden = true; };
+el('code-form').onsubmit = event => {
+  event.preventDefault();
+  if (el('code').value.trim() !== teacherCode) {
+    el('code-error').hidden = false;
+    el('code').focus();
+    return;
+  }
+  showReview();
+};
+document.addEventListener('visibilitychange', visibilityChanged);
+window.addEventListener('pageshow', visibilityChanged);
+window.addEventListener('storage', event => {
+  if (event.key === key && !el('test').hidden && active()) renderQuestion(false);
+});
+for (const name of ['selectstart', 'copy', 'cut', 'contextmenu', 'paste']) {
+  document.addEventListener(name, event => {
+    if (!el('test').hidden &&
+        (el('test').contains(event.target) || el('confirm-finish').contains(event.target) || name === 'copy')) {
+      event.preventDefault();
+    }
+  });
+}
+try {
+  localStorage.setItem(key + '-probe', '1');
+  localStorage.removeItem(key + '-probe');
+  if (active()) showTest(false);
+} catch { storageError(); }
+</script>
+</body>
+</html>
